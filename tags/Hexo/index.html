@@ -29,7 +29,7 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="在代码中遨游" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">标签</a></li><li class="is-active"><a href="#" aria-current="page">Hexo</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-04-10T11:39:39.000Z" title="2023/4/10 下午7:39:39">2023-04-10</time>发表</span><span class="level-item"><time dateTime="2023-04-10T11:39:39.988Z" title="2023/4/10 下午7:39:39">2023-04-10</time>更新</span><span class="level-item">7 分钟读完 (大约1054个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/04/10/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Hexo/">搭建自己的Hexo</a></p><div class="content"><p>下面来讲讲怎么创建自己的Hexo博客，难度不是很大，顺利的话问题也不会怎么有，不顺利当我没说。</p>
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="在代码中遨游" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/tags">标签</a></li><li class="is-active"><a href="#" aria-current="page">Hexo</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-04-10T11:39:39.000Z" title="2023/4/10 下午7:39:39">2023-04-10</time>发表</span><span class="level-item"><time dateTime="2023-04-10T11:44:06.479Z" title="2023/4/10 下午7:44:06">2023-04-10</time>更新</span><span class="level-item">8 分钟读完 (大约1153个字)</span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/04/10/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Hexo/">搭建自己的Hexo</a></p><div class="content"><p>下面来讲讲怎么创建自己的Hexo博客，难度不是很大，顺利的话问题也不会怎么有，不顺利当我没说。</p>
 <p>你需要准备的东西或者配置：</p>
 <ul>
 <li>Git</li>
@@ -88,8 +88,19 @@
 <p>首先你需要准备一个空空荡荡的文件夹，名字无所谓，之后你的博客所有的配置都会下载到里面，包括你要发表的东西、主题等等。同样的，你瞎搞搞坏了博客，直接删掉这个文件夹，重新搭建Hexo就行。</p>
 <p>假设你创建好了一个在D盘的博客文件夹 <strong>Blog</strong></p>
 <p>在这里，右键，打开 git bash<br>输入：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
-<p>就安装好了，这个时候文件夹应该啪的一下有很多东西。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br><span class="line"></span><br><span class="line">hexo init myblog</span><br><span class="line"></span><br><span class="line">cd myblog //进入这个myblog文件夹</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<p>就安装好了，这个时候文件夹应该啪的一下有很多东西。<br>我现在知道的：</p>
+<ul>
+<li>theme：放你下载的主题的地方</li>
+<li>source：用来存放你的文章</li>
+</ul>
+<p>别的还不会用，以后更新。不过先贴出来：</p>
+<ul>
+<li>node_modules: 依赖包</li>
+<li>public：存放生成的页面</li>
+<li>scaffolds：生成文章的一些模板</li>
+<li>_config：非常重要的配置文件</li>
+</ul>
 <p>检查版本命令：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo -v</span><br></pre></td></tr></table></figure>
 
