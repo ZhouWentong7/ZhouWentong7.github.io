@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>迁移Hexok博客 - 在代码中遨游</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="在代码中遨游"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="在代码中遨游"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="尝试迁移Hexo文件，因为换了新的电脑。 是Windows10 换到 Windows11。 一套做下来，其实和系统版本关系不大。 原来的Hexo是链接了Github和配置了新的主题的。"><meta property="og:type" content="blog"><meta property="og:title" content="迁移Hexok博客"><meta property="og:url" content="https://zhouwentong7.github.io/2023/06/26/%E8%BF%81%E7%A7%BBHexok%E5%8D%9A%E5%AE%A2/"><meta property="og:site_name" content="在代码中遨游"><meta property="og:description" content="尝试迁移Hexo文件，因为换了新的电脑。 是Windows10 换到 Windows11。 一套做下来，其实和系统版本关系不大。 原来的Hexo是链接了Github和配置了新的主题的。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://zhouwentong7.github.io/2023/06/26/%E8%BF%81%E7%A7%BBHexok%E5%8D%9A%E5%AE%A2/removeFiles.png"><meta property="article:published_time" content="2023-06-26T02:33:40.000Z"><meta property="article:modified_time" content="2023-11-18T08:46:51.470Z"><meta property="article:author" content="Zhou"><meta property="article:tag" content="Hexo"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://zhouwentong7.github.io/2023/06/26/%E8%BF%81%E7%A7%BBHexok%E5%8D%9A%E5%AE%A2/removeFiles.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhouwentong7.github.io/2023/06/26/%E8%BF%81%E7%A7%BBHexok%E5%8D%9A%E5%AE%A2/"},"headline":"迁移Hexok博客","image":["https://zhouwentong7.github.io/2023/06/26/%E8%BF%81%E7%A7%BBHexok%E5%8D%9A%E5%AE%A2/removeFiles.png"],"datePublished":"2023-06-26T02:33:40.000Z","dateModified":"2023-11-18T08:46:51.470Z","author":{"@type":"Person","name":"Zhou"},"publisher":{"@type":"Organization","name":"在代码中遨游","logo":{"@type":"ImageObject","url":{"text":"一个小角落"}}},"description":"尝试迁移Hexo文件，因为换了新的电脑。 是Windows10 换到 Windows11。 一套做下来，其实和系统版本关系不大。 原来的Hexo是链接了Github和配置了新的主题的。"}</script><link rel="canonical" href="https://zhouwentong7.github.io/2023/06/26/%E8%BF%81%E7%A7%BBHexok%E5%8D%9A%E5%AE%A2/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">一个小角落</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2023-06-26T02:33:40.000Z" title="2023/6/26 11:33:40">2023-06-26</time>发表</span><span class="level-item"><time dateTime="2023-11-18T08:46:51.470Z" title="2023/11/18 17:46:51">2023-11-18</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a><span> / </span><a class="link-muted" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Hexo/">Hexo</a></span><span class="level-item">10 分钟读完 (大约1450个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">迁移Hexok博客</h1><div class="content"><p>尝试迁移Hexo文件，因为换了新的电脑。</p>
+<p>是Windows10 换到 Windows11。 一套做下来，其实和系统版本关系不大。</p>
+<p>原来的Hexo是链接了Github和配置了新的主题的。</p>
+<span id="more"></span>
+
+<h1 id="迁移背景"><a href="#迁移背景" class="headerlink" title="迁移背景"></a>迁移背景</h1><ol>
+<li>原来电脑的Node.js 和 Git版本都和新电脑不一样</li>
+<li>原来的电脑Hexo博客已经和Github链接，且更新了一些文章</li>
+<li>原Hexo主题不是默认主题，且修改了这个主题的配置</li>
+<li>因为很早就打算换电脑了，也知道Hexo迁移没那么简单，所以很久没有更新了。</li>
+</ol>
+<p>简单来说，我之前的Hexo博客已经基本上什么都设置了一遍了（主题、Github），所以迁移的时候我希望能尽可能地保存我之前的配置。</p>
+<p>这段时间看了很多的迁移博客，看不懂，后来就直接勇敢向前冲了，目前看来迁移成功。所以记录一下。</p>
+<h1 id="1-拷贝原来的博客文件"><a href="#1-拷贝原来的博客文件" class="headerlink" title="1. 拷贝原来的博客文件"></a>1. 拷贝原来的博客文件</h1><p>网上看了很多的说法，但是我选择了保留的东西最多的一种。</p>
+<p><strong>除了node_models</strong>  全部拷贝！</p>
+<img src="/2023/06/26/%E8%BF%81%E7%A7%BBHexok%E5%8D%9A%E5%AE%A2/removeFiles.png" class="" title="迁移目录">
+
+<p>也有说public、deploy_git、.github什么的也可以不带的，但是好像也是在后面上传新的文章的时候，这些文件会自动更新，目前看来我拷贝过来也没有受到什么新的影响。</p>
+<hr>
+<h1 id="2-环境配置"><a href="#2-环境配置" class="headerlink" title="2. 环境配置"></a>2. 环境配置</h1><ul>
+<li>安装git并配置</li>
+<li>安装Node.js<blockquote>
+<p>在CSDN上有非常多的教程，我就不献丑了。或许以后补充</p>
+</blockquote>
+</li>
+</ul>
+<p>我在安装新的环境的时候并没有按照之前版本安装，都是官网上最新的版本，目前使用正常。</p>
+<p>建议：</p>
+<ul>
+<li>git 的user.name 和 user.email 都一样</li>
+<li>新的SSH的title是为了表示你的电脑来自哪里，可以换成新的电脑的名字。</li>
+<li>剩下的后面补充。</li>
+</ul>
+<p>推荐的安装博客(感谢大佬们的分享）：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42815188/article/details/128735530?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522168774459716800182115556%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=168774459716800182115556&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-128735530-null-null.142%5Ev88%5Econtrol_2,239%5Ev2%5Einsert_chatgpt&utm_term=git%E4%B8%8Egithub%E8%BF%9E%E6%8E%A5&spm=1018.2226.3001.4187">安装Git，并与Github链接</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_67392273/article/details/126113759">Node.js安装与环境配置</a></p>
+<hr>
+<h1 id="3-配置Hexo"><a href="#3-配置Hexo" class="headerlink" title="3. 配置Hexo"></a>3. 配置Hexo</h1><p>因为之前复制的时候没有带 node_models 文件<br>所以需要创建一下。</p>
+<p>在博客的文件夹下右键，点击 <code>Git Bash Here</code></p>
+<p>在命令行中依次键入：</p>
+<h2 id="1-安装Node-js相关的包。"><a href="#1-安装Node-js相关的包。" class="headerlink" title="1. 安装Node.js相关的包。"></a>1. 安装Node.js相关的包。</h2><p><code>npm install</code><br>是一个命令行命令，它用于安装 Node.js 包。 Hexo 博客目录中运行 <code>npm install</code> 时，它会安装 <code>package.json</code> 文件中列出的所有依赖项。这些依赖项是 Hexo 博客正常运行所必需的。</p>
+<p>也会创建node_models 这个文件夹了。</p>
+<h2 id="2-创建Hexo环境"><a href="#2-创建Hexo环境" class="headerlink" title="2. 创建Hexo环境"></a>2. 创建Hexo环境</h2><p><code>npm install -g hexo-cli</code><br>为电脑全局安装Hexo，没事全局就全局，自己用嘛。</p>
+<h2 id="3-安装-hexo-deployer-git-模块"><a href="#3-安装-hexo-deployer-git-模块" class="headerlink" title="3.安装 hexo-deployer-git 模块"></a>3.安装 <code>hexo-deployer-git</code> 模块</h2><p> <code>npm install hexo-deployer-git --save</code><br> 这是一个用于安装 <code>hexo-deployer-git</code> 模块的命令。</p>
+<ul>
+<li><code>npm install</code> 是用来安装 Node.js 模块的命令。</li>
+<li><code>hexo-deployer-git</code> 是一个用于将 Hexo 博客部署到 Git 仓库的模块。</li>
+<li><code>--save</code> 选项表示将模块保存到项目的 <code>package.json</code> 文件中，以便在其他电脑上重新安装时能够自动安装这个模块。</li>
+</ul>
+<p>运行这个命令后，它会在当前目录下安装 <code>hexo-deployer-git</code> 模块，并将其添加到 <code>package.json</code> 文件中。您可以在 Hexo 博客的配置文件中配置相关选项，然后使用 <code>hexo deploy</code> 命令将博客部署到 Git 仓库。</p>
+<h2 id="补充说明"><a href="#补充说明" class="headerlink" title="补充说明"></a>补充说明</h2><p>好像这个过程中都没有看到自己迁移后的博客怎么和自己的GitHub连接到一起？<br>其实在转移过来的_config.yml的最下面（我的是最下面），deploy的部分，已经设置了与Github对应仓库的配置，所以会自动绑定啦。</p>
+<hr>
+<h1 id="4-检查"><a href="#4-检查" class="headerlink" title="4. 检查"></a>4. 检查</h1><ul>
+<li>尝试发布新的文章：</li>
+</ul>
+<p><code>hexo new &quot;迁移Hexo博客&quot;</code></p>
+<ul>
+<li><p>然后编辑一波</p>
+</li>
+<li><p>清除缓存</p>
+</li>
+</ul>
+<p><code>hexo clean</code><br>可以写也可以不写的命令，用于清除缓存文件（db.json）和已生成的静态文件（public）。在某些情况下（尤其是更换主题后），如果发现对站点的更改无论如何也不生效，可能需要运行该命令。</p>
+<ul>
+<li>生成静态文章</li>
+</ul>
+<p><code>hexo g</code></p>
+<ul>
+<li>本地预览效果</li>
+</ul>
+<p><code>hexo s</code><br>可以不这么做。</p>
+<ul>
+<li>推送到远程服务器</li>
+</ul>
+<p><code>hexo d</code></p>
+<p>部署到远程服务器，会根据Hexo博客中的配置文件指定的部署选项进行推送。<br>若已经在配置文件中制定了使用hexo-deployer-git并配置了Git仓库的地址，就会推送到Github仓库啦。</p>
+<p>因为同步需要时间，过一两分钟之后打开自己的github博客主页，就可以看到自己的Hexo博客更新啦！</p>
+<p>而且之前的发布时间没有受到影响。</p>
+<hr>
+<h1 id="参考博客"><a href="#参考博客" class="headerlink" title="参考博客"></a>参考博客</h1><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/34791004">知乎：更换新电脑后，hexo无损方式重新部署</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/sinat_37781304/article/details/82729029?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522168774908416782427462312%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&request_id=168774908416782427462312&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-82729029-null-null.142%5Ev88%5Econtrol_2,239%5Ev2%5Einsert_chatgpt&utm_term=hexo&spm=1018.2226.3001.4187">CSDN：hexo史上最全搭建教程</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_36667170/article/details/118163563">CSDN：换电脑后怎么迁移Hexo博客？</a></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>迁移Hexok博客</p><p><a href="https://zhouwentong7.github.io/2023/06/26/迁移Hexok博客/">https://zhouwentong7.github.io/2023/06/26/迁移Hexok博客/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Zhou</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2023-06-26</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2023-11-18</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Hexo/">Hexo</a></div><div class="sharethis-inline-share-buttons"></div><script src="None" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="/None" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>爱发电</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/None" alt="支付宝"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/img/wechatPay.jpg" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2023/06/26/hello-world/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">Hello World</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2023/04/18/Markdown%E8%AF%AD%E6%B3%95%E5%9F%BA%E7%A1%80/"><span class="level-item">Markdown语法基础</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/myAvatar.png" alt="周大猛"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">周大猛</p><p class="is-size-6 is-block">擅长写三流的代码,一流的bug</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">15</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">10</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">12</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ZhouWentong7" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#迁移背景"><span class="level-left"><span class="level-item">1</span><span class="level-item">迁移背景</span></span></a></li><li><a class="level is-mobile" href="#1-拷贝原来的博客文件"><span class="level-left"><span class="level-item">2</span><span class="level-item">1. 拷贝原来的博客文件</span></span></a></li><li><a class="level is-mobile" href="#2-环境配置"><span class="level-left"><span class="level-item">3</span><span class="level-item">2. 环境配置</span></span></a></li><li><a class="level is-mobile" href="#3-配置Hexo"><span class="level-left"><span class="level-item">4</span><span class="level-item">3. 配置Hexo</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#1-安装Node-js相关的包。"><span class="level-left"><span class="level-item">4.1</span><span class="level-item">1. 安装Node.js相关的包。</span></span></a></li><li><a class="level is-mobile" href="#2-创建Hexo环境"><span class="level-left"><span class="level-item">4.2</span><span class="level-item">2. 创建Hexo环境</span></span></a></li><li><a class="level is-mobile" href="#3-安装-hexo-deployer-git-模块"><span class="level-left"><span class="level-item">4.3</span><span class="level-item">3.安装 hexo-deployer-git 模块</span></span></a></li><li><a class="level is-mobile" href="#补充说明"><span class="level-left"><span class="level-item">4.4</span><span class="level-item">补充说明</span></span></a></li></ul></li><li><a class="level is-mobile" href="#4-检查"><span class="level-left"><span class="level-item">5</span><span class="level-item">4. 检查</span></span></a></li><li><a class="level is-mobile" href="#参考博客"><span class="level-left"><span class="level-item">6</span><span class="level-item">参考博客</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-11-18T09:11:23.000Z">2023-11-18</time></p><p class="title"><a href="/2023/11/18/%E7%95%99%E5%AD%A6%E6%97%A5%E8%AE%B0-3/">留学日记-3</a></p><p class="categories"><a href="/categories/%E7%94%9F%E6%B4%BB/">生活</a> / <a href="/categories/%E7%94%9F%E6%B4%BB/%E7%95%99%E5%AD%A6/">留学</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-11-18T08:55:08.000Z">2023-11-18</time></p><p class="title"><a href="/2023/11/18/Python%E9%A1%B9%E7%9B%AE%E4%B8%8E%E5%88%AB%E4%BA%BA%E5%88%86%E4%BA%AB/">Python项目与别人分享</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/">代码管理</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-07-27T14:43:45.000Z">2023-07-27</time></p><p class="title"><a href="/2023/07/27/%E6%88%91%E7%9A%84%E5%B0%8F%E8%A7%92%E8%90%BD/">我的小角落</a></p><p class="categories"><a href="/categories/%E7%94%9F%E6%B4%BB/">生活</a> / <a href="/categories/%E7%94%9F%E6%B4%BB/%E7%95%99%E5%AD%A6/">留学</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-07-27T13:09:02.000Z">2023-07-27</time></p><p class="title"><a href="/2023/07/27/%E6%81%A2%E5%A4%8DSD%E5%8D%A1%E8%A2%AB%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%95%B0%E6%8D%AE/">恢复SD卡被格式化数据</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E7%A1%AC%E4%BB%B6/">硬件</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2023-07-23T12:11:42.000Z">2023-07-23</time></p><p class="title"><a href="/2023/07/23/git%E4%B8%8Egithub%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/">git与github使用方法</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/">代码管理</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2023/"><span class="level-start"><span class="level-item">2023</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技能学习</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Hexo/"><span class="level-start"><span class="level-item">Hexo</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/%E7%8E%AF%E5%A2%83/"><span class="level-start"><span class="level-item">环境</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/markdown/"><span class="level-start"><span class="level-item">markdown</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/"><span class="level-start"><span class="level-item">代码管理</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E7%A1%AC%E4%BB%B6/"><span class="level-start"><span class="level-item">硬件</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/"><span class="level-start"><span class="level-item">生活</span></span><span class="level-end"><span class="level-item tag">5</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E7%95%99%E5%AD%A6/"><span class="level-start"><span class="level-item">留学</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E9%97%B2%E8%AF%9D/"><span class="level-start"><span class="level-item">闲话</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/markdown/"><span class="tag">markdown</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%86%99%E4%BD%9C/"><span class="tag">写作</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"><span class="tag">数据恢复</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6/"><span class="tag">硬件</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%97%B2%E8%AF%9D/"><span class="tag">闲话</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%8B%8D/"><span class="tag">随拍</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/"><span class="tag">项目管理</span><span class="tag">1</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">一个小角落</a><p class="is-size-7"><span>&copy; 2023 Zhou</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
