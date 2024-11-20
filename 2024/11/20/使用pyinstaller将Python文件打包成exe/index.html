@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>使用pyinstaller将Python文件打包成exe - 在代码中遨游</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="在代码中遨游"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="在代码中遨游"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="本文介绍如何使用pyinstaller将.py文件打包成exe。"><meta property="og:type" content="blog"><meta property="og:title" content="使用pyinstaller将Python文件打包成exe"><meta property="og:url" content="https://zhouwentong7.github.io/2024/11/20/%E4%BD%BF%E7%94%A8pyinstaller%E5%B0%86Python%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E6%88%90exe/"><meta property="og:site_name" content="在代码中遨游"><meta property="og:description" content="本文介绍如何使用pyinstaller将.py文件打包成exe。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://zhouwentong7.github.io/img/og_image.png"><meta property="article:published_time" content="2024-11-20T01:41:12.000Z"><meta property="article:modified_time" content="2024-11-20T01:41:12.615Z"><meta property="article:author" content="Zhou"><meta property="article:tag" content="项目管理"><meta property="article:tag" content="项目分享"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://zhouwentong7.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhouwentong7.github.io/2024/11/20/%E4%BD%BF%E7%94%A8pyinstaller%E5%B0%86Python%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E6%88%90exe/"},"headline":"使用pyinstaller将Python文件打包成exe","image":["https://zhouwentong7.github.io/img/og_image.png"],"datePublished":"2024-11-20T01:41:12.000Z","dateModified":"2024-11-20T01:41:12.615Z","author":{"@type":"Person","name":"Zhou"},"publisher":{"@type":"Organization","name":"在代码中遨游","logo":{"@type":"ImageObject","url":{"text":"一个小角落"}}},"description":"本文介绍如何使用pyinstaller将.py文件打包成exe。"}</script><link rel="canonical" href="https://zhouwentong7.github.io/2024/11/20/%E4%BD%BF%E7%94%A8pyinstaller%E5%B0%86Python%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E6%88%90exe/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">一个小角落</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2024-11-20T01:41:12.000Z" title="2024/11/20 10:41:12">2024-11-20</time>发表</span><span class="level-item"><time dateTime="2024-11-20T01:41:12.615Z" title="2024/11/20 10:41:12">2024-11-20</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a><span> / </span><a class="link-muted" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/">代码管理</a></span><span class="level-item">10 分钟读完 (大约1484个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">使用pyinstaller将Python文件打包成exe</h1><div class="content"><p>本文介绍如何使用<code>pyinstaller</code>将<code>.py</code>文件打包成exe。</p>
+<span id="more"></span>
+
+<h1 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1 环境准备"></a>1 环境准备</h1><p>conda：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">conda install pyinstaller</span><br></pre></td></tr></table></figure>
+
+<p>pip:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install pyinstaller</span><br></pre></td></tr></table></figure>
+
+<p>检查是否安装成功：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller --version</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="2-打包"><a href="#2-打包" class="headerlink" title="2 打包"></a>2 打包</h1><h3 id="基本使用方法"><a href="#基本使用方法" class="headerlink" title="基本使用方法"></a><strong>基本使用方法</strong></h3><ol>
+<li><p><strong>打包 Python 脚本</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller your_script.py</span><br></pre></td></tr></table></figure>
+<p>运行后将在当前目录生成以下文件和文件夹：</p>
+<ul>
+<li><code>dist/</code>：生成的可执行文件所在目录。</li>
+<li><code>build/</code>：临时文件夹，包含打包时的构建文件。</li>
+<li><code>your_script.spec</code>：PyInstaller 的配置文件。</li>
+</ul>
+<p>打包的可执行文件位于 <code>dist/your_script/</code> 文件夹中。</p>
+</li>
+<li><p><strong>生成单文件可执行文件</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F your_script.py</span><br></pre></td></tr></table></figure>
+<p>生成的单文件可执行文件位于 <code>dist/</code> 文件夹中。</p>
+<p><strong>指定打包路径</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F --distpath ./output script.py</span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p><strong>无控制台窗口</strong><br>如果你的程序是 GUI 应用（如使用 <code>tkinter</code> 或 <code>PyQt</code>），不需要显示控制台窗口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F -w your_script.py</span><br></pre></td></tr></table></figure>
+<p><code>-w</code>（或 <code>--noconsole</code>）会隐藏控制台窗口。</p>
+</li>
+</ol>
+<h3 id="完成打包后"><a href="#完成打包后" class="headerlink" title="完成打包后"></a><strong>完成打包后</strong></h3><p><code>.exe</code>文件默认放在<code>dist/</code>文件夹下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">project/</span><br><span class="line">├── script.py</span><br><span class="line">├── build/                 # 打包时的临时文件夹</span><br><span class="line">├── dist/                  # 生成的可执行文件所在目录</span><br><span class="line">│   └── script.exe</span><br><span class="line">└── script.spec            # PyInstaller 的配置文件</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可以通过修改配置文件中<code>COLLECT</code>函数，添加或者修改<code>distpath</code>参数，修改文件打包位置。</p>
+</blockquote>
+<ol>
+<li><strong>单文件模式 (-F) 的可执行文件</strong><br>移动 .exe 文件单文件模式 (-F) 的可执行文件<br>直接移动 .exe 文件到任何位置都可以运行，因为所有的依赖都已经打包进去了。例如：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dist/</span><br><span class="line">└── script.exe -&gt; 移动到任意位置后仍可运行</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><strong>文件夹模式的可执行文件</strong><br>如果使用的是文件夹模式（–onedir 或默认模式），.exe 文件需要和生成的其他依赖文件保持在一起才能运行。例如：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dist/script/</span><br><span class="line">├── script.exe</span><br><span class="line">├── library.zip</span><br><span class="line">├── ...（其他依赖文件）</span><br></pre></td></tr></table></figure>
+<p>在这种情况下，移动 .exe 文件时需要整个文件夹一起移动。</p>
+<hr>
+<h3 id="常用参数详解"><a href="#常用参数详解" class="headerlink" title="常用参数详解"></a><strong>常用参数详解</strong></h3><p>以下是 PyInstaller 常用参数及其功能：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>基本参数</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>-F</code>, <code>--onefile</code></td>
+<td>将所有文件打包成一个独立的可执行文件。</td>
+</tr>
+<tr>
+<td><code>-D</code>, <code>--onedir</code></td>
+<td>（默认）将生成的文件放在一个文件夹中，包括依赖文件和可执行文件。</td>
+</tr>
+<tr>
+<td><code>-w</code>, <code>--noconsole</code></td>
+<td>隐藏控制台窗口（适用于 GUI 应用）。</td>
+</tr>
+<tr>
+<td><code>-c</code>, <code>--console</code></td>
+<td>默认显示控制台窗口（适用于 CLI 应用）。</td>
+</tr>
+<tr>
+<td><code>--name=NAME</code></td>
+<td>指定生成的可执行文件名称（默认为脚本名）。</td>
+</tr>
+<tr>
+<td><strong>依赖处理</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--hidden-import=MODULE</code></td>
+<td>手动指定未被自动检测到的模块。</td>
+</tr>
+<tr>
+<td><code>--exclude-module=MODULE</code></td>
+<td>从打包中排除某些模块。</td>
+</tr>
+<tr>
+<td><code>--add-data=SRC;DEST</code></td>
+<td>将额外的数据文件（如图片、配置文件等）打包到指定目录中。使用分号分隔源文件和目标路径。</td>
+</tr>
+<tr>
+<td><strong>优化与调试</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--clean</code></td>
+<td>清除旧的构建文件（如 <code>build/</code> 目录）。</td>
+</tr>
+<tr>
+<td><code>--log-level=LEVEL</code></td>
+<td>设置日志级别（可选值：<code>DEBUG</code>、<code>INFO</code>、<code>WARN</code>、<code>ERROR</code>）。</td>
+</tr>
+<tr>
+<td><strong>运行环境</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--icon=ICON_PATH</code></td>
+<td>指定可执行文件的图标（支持 <code>.ico</code> 格式）。</td>
+</tr>
+<tr>
+<td><code>--key=KEY</code></td>
+<td>对 Python 字节码加密时使用的密钥。</td>
+</tr>
+<tr>
+<td><code>--debug</code></td>
+<td>生成带调试信息的可执行文件。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="高级用法示例"><a href="#高级用法示例" class="headerlink" title="高级用法示例"></a><strong>高级用法示例</strong></h3><ol>
+<li><p><strong>添加资源文件（图片、配置文件等）</strong><br>将图片或其他资源文件打包到可执行文件中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F --add-data <span class="string">&quot;config.json;.&quot;</span> --add-data <span class="string">&quot;images/icon.png;images&quot;</span> your_script.py</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>config.json;.</code> 表示将 <code>config.json</code> 放到可执行文件的根目录。</li>
+<li><code>images/icon.png;images</code> 表示将 <code>icon.png</code> 放到 <code>images/</code> 文件夹中。</li>
+</ul>
+</li>
+<li><p><strong>指定图标</strong><br>为可执行文件指定图标：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F --icon=icon.ico your_script.py</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>处理隐藏依赖</strong><br>某些动态导入的模块可能不会被 PyInstaller 自动检测到，需要显式指定：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F --hidden-import=module_name your_script.py</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>加密 Python 字节码</strong><br>使用加密密钥保护 Python 源码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F --key=my_secret_key your_script.py</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>生成调试版本</strong><br>为调试生成的可执行文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pyinstaller -F --debug your_script.py</span><br></pre></td></tr></table></figure></li>
+</ol>
+<hr>
+<h3 id="常见问题与解决"><a href="#常见问题与解决" class="headerlink" title="常见问题与解决"></a><strong>常见问题与解决</strong></h3><ol>
+<li><p><strong>依赖模块未正确打包</strong></p>
+<ul>
+<li>使用 <code>--hidden-import</code> 显式添加依赖模块。</li>
+<li>使用 <code>pip show module_name</code> 查看依赖路径，确保依赖已安装。</li>
+</ul>
+</li>
+<li><p><strong>路径问题</strong></p>
+<ul>
+<li>动态加载的文件可能需要 <code>os.path</code> 获取运行时路径。使用以下代码适配 PyInstaller 的运行路径：<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">resource_path</span>(<span class="params">relative_path</span>):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">getattr</span>(sys, <span class="string">&#x27;frozen&#x27;</span>, <span class="literal">False</span>):  <span class="comment"># 如果是打包后的 exe</span></span><br><span class="line">        base_path = sys._MEIPASS</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        base_path = os.path.abspath(<span class="string">&quot;.&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> os.path.join(base_path, relative_path)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>文件过大</strong></p>
+<ul>
+<li>使用 <code>--onedir</code> 打包到文件夹形式，减少启动时间。</li>
+<li>删除不必要的模块或依赖，使用 <code>--exclude-module</code> 参数。</li>
+</ul>
+</li>
+<li><p><strong>exe在用户输入后程序闪退</strong></p>
+<ul>
+<li>在程序末尾添加<code>input(&quot;\n按回车键退出程序...&quot;)</code>，即使运行结束也会等待用户按回车键后退出。</li>
+<li>使用try-except  和 log捕获运行错误，记录到日志文件中</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h3 id="参考命令总结"><a href="#参考命令总结" class="headerlink" title="参考命令总结"></a><strong>参考命令总结</strong></h3><table>
+<thead>
+<tr>
+<th>用途</th>
+<th>命令示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>打包单文件</td>
+<td><code>pyinstaller -F script.py</code></td>
+</tr>
+<tr>
+<td>打包带图标的单文件</td>
+<td><code>pyinstaller -F --icon=icon.ico script.py</code></td>
+</tr>
+<tr>
+<td>打包隐藏控制台窗口</td>
+<td><code>pyinstaller -F -w script.py</code></td>
+</tr>
+<tr>
+<td>添加资源文件</td>
+<td><code>pyinstaller -F --add-data &quot;data.json;.&quot; script.py</code></td>
+</tr>
+<tr>
+<td>加入未检测到的模块</td>
+<td><code>pyinstaller -F --hidden-import=module_name script.py</code></td>
+</tr>
+<tr>
+<td>生成调试版本</td>
+<td><code>pyinstaller -F --debug script.py</code></td>
+</tr>
+</tbody></table>
+<p>PyInstaller 是功能强大的工具，但需要根据具体的需求和环境进行调整和优化。掌握这些参数和技巧可以更高效地创建可执行文件。</p>
+<blockquote>
+<p>本文参考GPT和百度</p>
+</blockquote>
+</div><div class="article-licensing box"><div class="licensing-title"><p>使用pyinstaller将Python文件打包成exe</p><p><a href="https://zhouwentong7.github.io/2024/11/20/使用pyinstaller将Python文件打包成exe/">https://zhouwentong7.github.io/2024/11/20/使用pyinstaller将Python文件打包成exe/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Zhou</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2024-11-20</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2024-11-20</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/">项目管理</a><a class="link-muted mr-2" rel="tag" href="/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/">项目分享</a></div><div class="sharethis-inline-share-buttons"></div><script src="None" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="/None" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>爱发电</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/None" alt="支付宝"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/img/wechatPay.jpg" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/08/13/Python%E8%AF%BB%E5%8F%96-nii%E6%96%87%E4%BB%B6/"><span class="level-item">Python读取.nii文件</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/DSCF4111.JPG" alt="周大猛"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">周大猛</p><p class="is-size-6 is-block">擅长写三流的代码,一流的bug</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">23</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">14</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">19</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ZhouWentong7" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-环境准备"><span class="level-left"><span class="level-item">1</span><span class="level-item">1 环境准备</span></span></a></li><li><a class="level is-mobile" href="#2-打包"><span class="level-left"><span class="level-item">2</span><span class="level-item">2 打包</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#参考命令总结"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">参考命令总结</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-11-20T01:41:12.000Z">2024-11-20</time></p><p class="title"><a href="/2024/11/20/%E4%BD%BF%E7%94%A8pyinstaller%E5%B0%86Python%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E6%88%90exe/">使用pyinstaller将Python文件打包成exe</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/">代码管理</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-08-13T05:50:16.000Z">2024-08-13</time></p><p class="title"><a href="/2024/08/13/Python%E8%AF%BB%E5%8F%96-nii%E6%96%87%E4%BB%B6/">Python读取.nii文件</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-06-11T05:51:28.000Z">2024-06-11</time></p><p class="title"><a href="/2024/06/11/%E7%95%99%E5%AD%A6%E8%AE%B0%E5%BD%95-5/">留学记录-5</a></p><p class="categories"><a href="/categories/%E7%94%9F%E6%B4%BB/">生活</a> / <a href="/categories/%E7%94%9F%E6%B4%BB/%E7%95%99%E5%AD%A6/">留学</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-05-21T15:23:07.000Z">2024-05-22</time></p><p class="title"><a href="/2024/05/22/PyTorch%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8%E6%95%99%E7%A8%8B%EF%BC%88%E7%BB%9D%E5%AF%B9%E9%80%9A%E4%BF%97%E6%98%93%E6%87%82%EF%BC%81%EF%BC%89%E5%B0%8F%E5%9C%9F%E5%A0%86/">PyTorch深度学习快速入门教程（绝对通俗易懂！）小土堆</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-05-07T05:53:24.000Z">2024-05-07</time></p><p class="title"><a href="/2024/05/07/%E8%AE%A1%E7%AE%97%E6%9C%BA%E4%BC%9A%E8%AE%AE%E5%8F%8A%E6%9C%9F%E5%88%8A%E6%80%BB%E7%BB%93/">计算机会议及期刊总结</a></p><p class="categories"><a href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/">知识科普</a> / <a href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/%E8%AE%A1%E7%AE%97%E6%9C%BA/">计算机</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2024/"><span class="level-start"><span class="level-item">2024</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2023/"><span class="level-start"><span class="level-item">2023</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技术学习</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">深度学习</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技能学习</span></span><span class="level-end"><span class="level-item tag">12</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Hexo/"><span class="level-start"><span class="level-item">Hexo</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/%E7%8E%AF%E5%A2%83/"><span class="level-start"><span class="level-item">环境</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/markdown/"><span class="level-start"><span class="level-item">markdown</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/"><span class="level-start"><span class="level-item">代码管理</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E7%A1%AC%E4%BB%B6/"><span class="level-start"><span class="level-item">硬件</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/"><span class="level-start"><span class="level-item">生活</span></span><span class="level-end"><span class="level-item tag">7</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E7%95%99%E5%AD%A6/"><span class="level-start"><span class="level-item">留学</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E9%97%B2%E8%AF%9D/"><span class="level-start"><span class="level-item">闲话</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/"><span class="level-start"><span class="level-item">知识科普</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/%E8%AE%A1%E7%AE%97%E6%9C%BA/"><span class="level-start"><span class="level-item">计算机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/deep-learning/"><span class="tag">deep learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/markdown/"><span class="tag">markdown</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%86%99%E4%BD%9C/"><span class="tag">写作</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"><span class="tag">数据恢复</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/"><span class="tag">文件读取</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6/"><span class="tag">硬件</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E7%A0%94/"><span class="tag">科研</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%97%B2%E8%AF%9D/"><span class="tag">闲话</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%8B%8D/"><span class="tag">随拍</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/"><span class="tag">项目分享</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/"><span class="tag">项目管理</span><span class="tag">2</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">一个小角落</a><p class="is-size-7"><span>&copy; 2024 Zhou</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
