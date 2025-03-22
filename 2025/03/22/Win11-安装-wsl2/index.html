@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Win11 安装 wsl2 - 在代码中遨游</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="在代码中遨游"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="在代码中遨游"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="在Windows11下安装WSL2操作记录 官方教程"><meta property="og:type" content="blog"><meta property="og:title" content="Win11 安装 wsl2"><meta property="og:url" content="https://zhouwentong7.github.io/2025/03/22/Win11-%E5%AE%89%E8%A3%85-wsl2/"><meta property="og:site_name" content="在代码中遨游"><meta property="og:description" content="在Windows11下安装WSL2操作记录 官方教程"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://zhouwentong7.github.io/img/og_image.png"><meta property="article:published_time" content="2025-03-22T13:18:30.000Z"><meta property="article:modified_time" content="2025-03-22T13:18:30.688Z"><meta property="article:author" content="Zhou"><meta property="article:tag" content="Linux"><meta property="article:tag" content="Windows"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://zhouwentong7.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhouwentong7.github.io/2025/03/22/Win11-%E5%AE%89%E8%A3%85-wsl2/"},"headline":"Win11 安装 wsl2","image":["https://zhouwentong7.github.io/img/og_image.png"],"datePublished":"2025-03-22T13:18:30.000Z","dateModified":"2025-03-22T13:18:30.688Z","author":{"@type":"Person","name":"Zhou"},"publisher":{"@type":"Organization","name":"在代码中遨游","logo":{"@type":"ImageObject","url":{"text":"一个小角落"}}},"description":"在Windows11下安装WSL2操作记录 官方教程"}</script><link rel="canonical" href="https://zhouwentong7.github.io/2025/03/22/Win11-%E5%AE%89%E8%A3%85-wsl2/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">一个小角落</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-03-22T13:18:30.000Z" title="2025/3/22 22:18:30">2025-03-22</time>发表</span><span class="level-item"><time dateTime="2025-03-22T13:18:30.688Z" title="2025/3/22 22:18:30">2025-03-22</time>更新</span><span class="level-item">8 分钟读完 (大约1200个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Win11 安装 wsl2</h1><div class="content"><p>在Windows11下安装WSL2操作记录<br>
+<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/wsl/setup/environment">官方教程</a></p>
+<span id="more"></span>
+<p>大佬们总是说Linux好用极了，也看到实验室的同学在用，十分不解。</p>
+<p>但是这个东西更多的是给我不可磨灭的难用印象……（感谢本科的教学）</p>
+<p>唯一怀念的就是里面的Fuck命令了。</p>
+<p>实在好奇，到底有多好用……</p>
+<p>本文基本上是官方文档的搬运。</p>
+<h1 id="%E4%BB%80%E4%B9%88%E6%98%AFwsl2" tabindex="-1">什么是wsl2</h1>
+<p>WSL（Windows Subsystem for Linux）就是Windows系统下的Linux子系统，让你可以无需下载单独的虚拟机或者刷机，就可以在计算机上运行Linex环境。</p>
+<ul>
+<li>可以使用各种Linux发行版：Ubuntu、Debian、Kail等</li>
+</ul>
+<h1 id="%E7%AE%80%E4%BB%8B" tabindex="-1">简介</h1>
+<p>安装默认版本的Linux，使用虚拟化技术在轻量级实用程序虚拟机中运行Linux内核。</p>
+<p>Linux在WSL2托管VM中作为独立容器运行。</p>
+<p>WSL2比WSL1具有更高的文件系统性能，增加了完整的系统调用兼容性。</p>
+<h1 id="%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B" tabindex="-1">安装过程</h1>
+<h2 id="%E9%80%9A%E8%BF%87powershell" tabindex="-1" id="通过PowerShell">通过PowerShell</h2>
+<p>以管理员身份打开<code>PowerShell</code>, 输入下面的命令安装默认版本的Linux和Ubuntu：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --install</span><br></pre></td></tr></table></figure>
+<p>该命令会执行：</p>
+<ul>
+<li>启用可选择的wsl和Virtual Machine Platform组件</li>
+<li>下载安装最新Linux内核</li>
+<li>将WSL2设为默认值</li>
+<li>下载安装Ubuntu Linux发行版本（可能需要重新启动）</li>
+</ul>
+<h2 id="%E8%AE%BE%E7%BD%AElinux%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81" tabindex="-1" id="设置Linux用户名和密码">设置Linux用户名和密码</h2>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/wsl/setup/environment">官方</a></p>
+<p>使用开始面板打开下载好的发行版（默认为Ubuntu），需要未Linux发行版创建<strong>用户名</strong> 和<strong>密码</strong>。</p>
+<ul>
+<li>此用户名与密码与Win用户名无关，只与该发行版有关</li>
+<li>输入密码时，屏幕不会有任何光标，这是“blind typing”。</li>
+<li>此账户就是Linux的管理员，能运行<code>sudo</code>（super user do）命令</li>
+<li>WLS运行的每个Linex都有自己的Linux用户账户和密码，每次添加分发、重新安装或者重置的时候，都需要配置Linux用户账户</li>
+</ul>
+<blockquote>
+<p>官方提供修改和忘记密码的时候如何操作</p>
+</blockquote>
+<h2 id="%E6%9B%B4%E6%96%B0%E5%92%8C%E5%8D%87%E7%BA%A7" tabindex="-1" id="更新和升级">更新和升级</h2>
+<p>官方建议定期升级和更新软件包，对于Ubuntu和Debian：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update &amp;&amp; sudo apt upgrade</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Win不会自动更新Linux，因为Linux用户喜欢自己更新（不愧是大佬们）</p>
+</blockquote>
+<h2 id="%E6%B7%BB%E5%8A%A0%E5%85%B6%E4%BB%96%E5%88%86%E9%85%8D" tabindex="-1" id="添加其他分配">添加其他分配</h2>
+<p>略</p>
+<h2 id="%E8%AE%BE%E7%BD%AEwin%E7%BB%88%E7%AB%AF" tabindex="-1" id="设置Win终端">设置Win终端</h2>
+<hr>
+<h1 id="%E5%B0%86ubuntu%E8%BD%AC%E7%A7%BB%E5%88%B0%E5%88%AB%E7%9A%84%E7%9B%98" tabindex="-1">将Ubuntu转移到别的盘</h1>
+<p>网上的解决方法：<a target="_blank" rel="noopener" href="https://superuser.com/questions/1550622/move-wsl2-file-system-to-another-drive/1618643#1618643">https://superuser.com/questions/1550622/move-wsl2-file-system-to-another-drive/1618643#1618643</a></p>
+<ol>
+<li>到处Ubuntu</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir D:\backup</span><br></pre></td></tr></table></figure>
+<p>将 Ubuntu 发行版导出到备份文件夹中的 tar 文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --export Ubuntu D:\backup\ubuntu.tar</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>取消注册现有分配：<br>
+从驱动器 C 中删除现有的 Ubuntu 发行版：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --unregister Ubuntu</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>将 Ubuntu 导入驱动器 D：</li>
+</ol>
+<ul>
+<li>在驱动器 D 上为 WSL 安装创建新文件夹</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir D:\wsl</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将 Ubuntu 发行版从备份 tar 文件导入到驱动器 D 上的新文件夹：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wsl --import Ubuntu D:\wsl\ D:\backup\ubuntu.tar</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>设置默认用户<br>
+默认情况下，Ubuntu 可以使用 root 用户。要恢复到以前的用户，请执行以下步骤</li>
+</ol>
+<ul>
+<li>打开 Ubuntu 应用程序文件夹。您可以通过运行以下命令来执行此作：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd %userprofile%\AppData\Local\Microsoft\WindowsApps</span><br></pre></td></tr></table></figure>
+<p>通过运行以下命令并将 <username> 替换为所需的用户名来设置默认用户</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ubuntu config --default-user &lt;username&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>但是我’wsl --install’之后点开Ubuntu并没有进行设置密码和用户，我直接搬运了Ubuntu的位置（或许是成功了）。然后默认管理员名称为root，密码未设置。<br>
+管理员root没有初始密码的时候可以此时添加密码：<code>passwd root</code></p>
+</blockquote>
+<h1 id="%E5%85%B6%E4%BB%96%E9%85%8D%E7%BD%AE" tabindex="-1">其他配置</h1>
+<h2 id="zsh-and-oh-my-zsh" tabindex="-1" id="zsh-and-oh-my-zsh">zsh and oh-my-zsh</h2>
+<ol>
+<li>下载Powerline字体集合</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install fonts-powerline</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>安装zsh</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt install git zsh -y</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>安装oh-my-zsh</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh -c &quot;$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;</span><br></pre></td></tr></table></figure>
+<p>让命令行和命令更简洁明了。</p>
+<p>安装参考<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
+<h2 id="%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%E5%B9%B6%E5%88%86%E9%85%8Dsudo%E6%9D%83%E9%99%90" tabindex="-1" id="添加用户并分配sudo权限">添加用户并分配sudo权限</h2>
+<p>root :</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo adduser [username]</span><br></pre></td></tr></table></figure>
+<p>会要求输入密码</p>
+<h3 id="%E5%88%86%E9%85%8Dsudo%E6%9D%83%E9%99%90" tabindex="-1" id="分配sudo权限">分配sudo权限</h3>
+<p>添加用户到 sudo 组（可选）： 如果你希望新用户有 sudo 权限（可以执行管理员权限的命令），可以将其添加到 sudo 组：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -aG sudo [newuser]</span><br></pre></td></tr></table></figure>
+<h3 id="%E5%88%87%E6%8D%A2%E7%94%A8%E6%88%B7" tabindex="-1" id="切换用户">切换用户</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su - newuser</span><br></pre></td></tr></table></figure>
+<h3 id="%E5%9B%9E%E5%88%B0root%E7%94%A8%E6%88%B7" tabindex="-1" id="回到root用户">回到root用户</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su -</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>需要输入root用户的密码</p>
+</blockquote>
+<h2 id="%E5%92%8Cwin%E7%9A%84%E5%85%B3%E8%81%94" tabindex="-1" id="和win的关联">和win的关联</h2>
+<p>windows系统的所有文件都在<code>/mnt/</code>下面：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /mnt/</span><br></pre></td></tr></table></figure>
+<p>就可以看到个各个盘了。</p>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/x777777x/article/details/141092913?fromshare=blogdetail&amp;sharetype=blogdetail&amp;sharerId=141092913&amp;sharerefer=PC&amp;sharesource=weixin_51636581&amp;sharefrom=from_link">https://blog.csdn.net/x777777x/article/details/141092913?fromshare=blogdetail&amp;sharetype=blogdetail&amp;sharerId=141092913&amp;sharerefer=PC&amp;sharesource=weixin_51636581&amp;sharefrom=from_link</a> <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Win11 安装 wsl2</p><p><a href="https://zhouwentong7.github.io/2025/03/22/Win11-安装-wsl2/">https://zhouwentong7.github.io/2025/03/22/Win11-安装-wsl2/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Zhou</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2025-03-22</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2025-03-22</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Linux/">Linux</a><a class="link-muted mr-2" rel="tag" href="/tags/Windows/">Windows</a></div><div class="sharethis-inline-share-buttons"></div><script src="None" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="https://ifdian.net/a/a_little_corner" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>爱发电</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/None" alt="支付宝"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/img/wechatPay.jpg" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/03/16/Hexo%E6%B7%BB%E5%8A%A0%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD-gitalk/"><span class="level-item">Hexo添加评论功能-gitalk</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "2c200042b127d7889bd1b4b748b7dd84",
+            repo: "ZhouWentong7.github.io",
+            owner: "ZhouWentong7",
+            clientID: "Ov23ligZ57M4OmBZPjFL",
+            clientSecret: "dbf28ece71a56afb30b2475d2de8005c5c0ae49c",
+            admin: ["ZhouWentong7"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/DSCF4111.JPG" alt="周大猛"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">周大猛</p><p class="is-size-6 is-block">擅长写三流的代码,一流的bug</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">26</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">15</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">23</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ZhouWentong7" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#%E4%BB%80%E4%B9%88%E6%98%AFwsl2"><span class="level-left"><span class="level-item">1</span><span class="level-item">什么是wsl2</span></span></a></li><li><a class="level is-mobile" href="#%E7%AE%80%E4%BB%8B"><span class="level-left"><span class="level-item">2</span><span class="level-item">简介</span></span></a></li><li><a class="level is-mobile" href="#%E5%AE%89%E8%A3%85%E8%BF%87%E7%A8%8B"><span class="level-left"><span class="level-item">3</span><span class="level-item">安装过程</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#%E9%80%9A%E8%BF%87powershell"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">通过PowerShell</span></span></a></li><li><a class="level is-mobile" href="#%E8%AE%BE%E7%BD%AElinux%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">设置Linux用户名和密码</span></span></a></li><li><a class="level is-mobile" href="#%E6%9B%B4%E6%96%B0%E5%92%8C%E5%8D%87%E7%BA%A7"><span class="level-left"><span class="level-item">3.3</span><span class="level-item">更新和升级</span></span></a></li><li><a class="level is-mobile" href="#%E6%B7%BB%E5%8A%A0%E5%85%B6%E4%BB%96%E5%88%86%E9%85%8D"><span class="level-left"><span class="level-item">3.4</span><span class="level-item">添加其他分配</span></span></a></li><li><a class="level is-mobile" href="#%E8%AE%BE%E7%BD%AEwin%E7%BB%88%E7%AB%AF"><span class="level-left"><span class="level-item">3.5</span><span class="level-item">设置Win终端</span></span></a></li></ul></li><li><a class="level is-mobile" href="#%E5%B0%86ubuntu%E8%BD%AC%E7%A7%BB%E5%88%B0%E5%88%AB%E7%9A%84%E7%9B%98"><span class="level-left"><span class="level-item">4</span><span class="level-item">将Ubuntu转移到别的盘</span></span></a></li><li><a class="level is-mobile" href="#%E5%85%B6%E4%BB%96%E9%85%8D%E7%BD%AE"><span class="level-left"><span class="level-item">5</span><span class="level-item">其他配置</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#zsh-and-oh-my-zsh"><span class="level-left"><span class="level-item">5.1</span><span class="level-item">zsh and oh-my-zsh</span></span></a></li><li><a class="level is-mobile" href="#%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7%E5%B9%B6%E5%88%86%E9%85%8Dsudo%E6%9D%83%E9%99%90"><span class="level-left"><span class="level-item">5.2</span><span class="level-item">添加用户并分配sudo权限</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#%E5%88%86%E9%85%8Dsudo%E6%9D%83%E9%99%90"><span class="level-left"><span class="level-item">5.2.1</span><span class="level-item">分配sudo权限</span></span></a></li><li><a class="level is-mobile" href="#%E5%88%87%E6%8D%A2%E7%94%A8%E6%88%B7"><span class="level-left"><span class="level-item">5.2.2</span><span class="level-item">切换用户</span></span></a></li><li><a class="level is-mobile" href="#%E5%9B%9E%E5%88%B0root%E7%94%A8%E6%88%B7"><span class="level-left"><span class="level-item">5.2.3</span><span class="level-item">回到root用户</span></span></a></li></ul></li><li><a class="level is-mobile" href="#%E5%92%8Cwin%E7%9A%84%E5%85%B3%E8%81%94"><span class="level-left"><span class="level-item">5.3</span><span class="level-item">和win的关联</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-03-22T13:18:30.000Z">2025-03-22</time></p><p class="title"><a href="/2025/03/22/Win11-%E5%AE%89%E8%A3%85-wsl2/">Win11 安装 wsl2</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-03-16T06:58:45.000Z">2025-03-16</time></p><p class="title"><a href="/2025/03/16/Hexo%E6%B7%BB%E5%8A%A0%E8%AF%84%E8%AE%BA%E5%8A%9F%E8%83%BD-gitalk/">Hexo添加评论功能-gitalk</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Hexo/">Hexo</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-03-14T14:33:06.000Z">2025-03-14</time></p><p class="title"><a href="/2025/03/14/%E5%AD%A6%E4%BC%9A%E6%8F%90%E9%97%AE-%E8%AF%BB%E5%90%8E%E6%84%9F/">学会提问-读后感</a></p><p class="categories"><a href="/categories/%E7%94%9F%E6%B4%BB/">生活</a> / <a href="/categories/%E7%94%9F%E6%B4%BB/%E9%98%85%E8%AF%BB/">阅读</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-11-20T01:41:12.000Z">2024-11-20</time></p><p class="title"><a href="/2024/11/20/%E4%BD%BF%E7%94%A8pyinstaller%E5%B0%86Python%E6%96%87%E4%BB%B6%E6%89%93%E5%8C%85%E6%88%90exe/">使用pyinstaller将Python文件打包成exe</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/">代码管理</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2024-08-13T05:50:16.000Z">2024-08-13</time></p><p class="title"><a href="/2024/08/13/Python%E8%AF%BB%E5%8F%96-nii%E6%96%87%E4%BB%B6/">Python读取.nii文件</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/"><span class="level-start"><span class="level-item">2025</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/"><span class="level-start"><span class="level-item">2024</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2023/"><span class="level-start"><span class="level-item">2023</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技术学习</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">深度学习</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技能学习</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Hexo/"><span class="level-start"><span class="level-item">Hexo</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/%E7%8E%AF%E5%A2%83/"><span class="level-start"><span class="level-item">环境</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/markdown/"><span class="level-start"><span class="level-item">markdown</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/"><span class="level-start"><span class="level-item">代码管理</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E7%A1%AC%E4%BB%B6/"><span class="level-start"><span class="level-item">硬件</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/"><span class="level-start"><span class="level-item">生活</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E7%95%99%E5%AD%A6/"><span class="level-start"><span class="level-item">留学</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E9%97%B2%E8%AF%9D/"><span class="level-start"><span class="level-item">闲话</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E9%98%85%E8%AF%BB/"><span class="level-start"><span class="level-item">阅读</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/"><span class="level-start"><span class="level-item">知识科普</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/%E8%AE%A1%E7%AE%97%E6%9C%BA/"><span class="level-start"><span class="level-item">计算机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Windows/"><span class="tag">Windows</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/deep-learning/"><span class="tag">deep learning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/markdown/"><span class="tag">markdown</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%86%99%E4%BD%9C/"><span class="tag">写作</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"><span class="tag">数据恢复</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/"><span class="tag">文件读取</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%9F%E6%B4%BB/"><span class="tag">生活</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6/"><span class="tag">硬件</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E7%A0%94/"><span class="tag">科研</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/"><span class="tag">读后感</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%97%B2%E8%AF%9D/"><span class="tag">闲话</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%8B%8D/"><span class="tag">随拍</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/"><span class="tag">项目分享</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/"><span class="tag">项目管理</span><span class="tag">2</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">一个小角落</a><p class="is-size-7"><span>&copy; 2025 Zhou</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
