@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>激活函数-ReLU-LeakyReLU - 在代码中遨游</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="在代码中遨游"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="在代码中遨游"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="对激活函数：  ReLU Leaky ReLU  进行定义介，包括公式定义、代码实现和优缺点，以及适用场景。"><meta property="og:type" content="blog"><meta property="og:title" content="激活函数-ReLU-LeakyReLU"><meta property="og:url" content="https://zhouwentong7.github.io/2025/04/12/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-ReLU-LeakyReLU/"><meta property="og:site_name" content="在代码中遨游"><meta property="og:description" content="对激活函数：  ReLU Leaky ReLU  进行定义介，包括公式定义、代码实现和优缺点，以及适用场景。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://zhouwentong7.github.io/2025/04/12/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-ReLU-LeakyReLU/ReLU.png"><meta property="og:image" content="https://zhouwentong7.github.io/2025/04/12/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-ReLU-LeakyReLU/ReLUvsLeakyReLU.png"><meta property="article:published_time" content="2025-04-11T15:04:30.000Z"><meta property="article:modified_time" content="2025-04-11T15:04:30.929Z"><meta property="article:author" content="Zhou"><meta property="article:tag" content="deep learning"><meta property="article:tag" content="pytorch"><meta property="article:tag" content="Activation Function"><meta property="article:tag" content="ReLU"><meta property="article:tag" content="Leaky ReLU"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://zhouwentong7.github.io/2025/04/12/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-ReLU-LeakyReLU/ReLU.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhouwentong7.github.io/2025/04/12/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-ReLU-LeakyReLU/"},"headline":"激活函数-ReLU-LeakyReLU","image":["https://zhouwentong7.github.io/2025/04/12/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-ReLU-LeakyReLU/ReLU.png","https://zhouwentong7.github.io/2025/04/12/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-ReLU-LeakyReLU/ReLUvsLeakyReLU.png"],"datePublished":"2025-04-11T15:04:30.000Z","dateModified":"2025-04-11T15:04:30.929Z","author":{"@type":"Person","name":"Zhou"},"publisher":{"@type":"Organization","name":"在代码中遨游","logo":{"@type":"ImageObject","url":{"text":"一个小角落"}}},"description":"对激活函数：  ReLU Leaky ReLU  进行定义介，包括公式定义、代码实现和优缺点，以及适用场景。"}</script><link rel="canonical" href="https://zhouwentong7.github.io/2025/04/12/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-ReLU-LeakyReLU/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">一个小角落</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-04-11T15:04:30.000Z" title="2025/4/12 0:04:30">2025-04-12</time>发表</span><span class="level-item"><time dateTime="2025-04-11T15:04:30.929Z" title="2025/4/12 0:04:30">2025-04-12</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a><span> / </span><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></span><span class="level-item">7 分钟读完 (大约982个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">激活函数-ReLU-LeakyReLU</h1><div class="content"><p>对激活函数：</p>
+<ul>
+<li>ReLU</li>
+<li>Leaky ReLU</li>
+</ul>
+<p>进行定义介，包括公式定义、代码实现和优缺点，以及适用场景。</p>
+<span id="more"></span>
+<h1 id="1-relu" tabindex="-1">1 ReLU</h1>
+<p>公式：</p>
+<p>$$<br>
+ReLU(x)=x^{+}=max(0,x)=\frac{x+|x|}{2}<br>
+$$<br>
+<img src="ReLU.png" alt="ReLU"></p>
+<h2 id="%E2%9C%85%E4%BC%98%E7%82%B9" tabindex="-1" id="✅优点">✅优点</h2>
+<ul>
+<li><strong>计算简单</strong>：没有复杂的函数操作，计算速度快。</li>
+<li><strong>缓解梯度消失</strong>：相比 sigmoid/tanh，ReLU 在正区间的梯度恒为 1，有利于反向传播。</li>
+<li><strong>稀疏激活</strong>：当输入为负时输出为 0，有助于模型的稀疏性与鲁棒性。</li>
+</ul>
+<h2 id="%E2%9A%A0%EF%B8%8F-%E7%BC%BA%E7%82%B9%EF%BC%9A%E6%AD%BB%E4%BA%A1relu%E9%97%AE%E9%A2%98%EF%BC%88dying-relu%EF%BC%89" tabindex="-1" id="⚠️-缺点：死亡ReLU问题（Dying-ReLU）">⚠️ 缺点：死亡ReLU问题（Dying ReLU）</h2>
+<p>ReLU的导数：<br>
+![grad of ReLU](grad of ReLU.png)</p>
+<p>当输入始终小于 0 时，ReLU 输出恒为 0，对应神经元在训练过程中就“死了”，不再更新权重</p>
+<h2 id="2-leaky-relu" tabindex="-1" id="2-Leaky-ReLU">2 Leaky ReLU</h2>
+<p>为了缓解“死亡 ReLU”问题，Leaky ReLU 提出了一种小改动：</p>
+<p>$$<br>
+\text{Leaky ReLU}(x) =<br>
+\begin{cases}<br>
+x &amp; \text{if } x \geq 0 \<br>
+\alpha x &amp; \text{if } x &lt; 0<br>
+\end{cases}<br>
+$$</p>
+<p>其中 $\alpha$ 是一个很小的常数，通常取值如 0.01。<br>
+斜率系数是在<strong>训练之前</strong>确定的，即在训练期间不会学习。这种类型的激活函数在我们可能遭受<strong>稀疏梯度</strong>的任务中很受欢迎，例如训练<strong>生成对抗网络</strong>。</p>
+<h2 id="%E2%9C%85-%E4%BC%98%E7%82%B9" tabindex="-1" id="✅-优点">✅ 优点</h2>
+<ul>
+<li><strong>解决死亡问题</strong>：负值区域有一个小斜率，不会完全丢失梯度。</li>
+<li><strong>提升模型鲁棒性</strong>：在某些任务中可以提高模型性能。</li>
+</ul>
+<h2 id="%E2%9A%A0%EF%B8%8F-%E7%BC%BA%E7%82%B9" tabindex="-1" id="⚠️-缺点">⚠️ 缺点</h2>
+<ul>
+<li>仍然不是零均值输出，可能导致一定的偏移。</li>
+<li>引入了超参数 $\alpha$，需要手动设定或调参。</li>
+</ul>
+<h1 id="%E4%BB%A3%E7%A0%81%E4%BB%A5%E5%8F%8A%E5%8F%AF%E8%A7%86%E5%8C%96" tabindex="-1">代码以及可视化</h1>
+<p><strong>Pytorch</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"></span><br><span class="line">relu = nn.ReLU()</span><br><span class="line">leaky_relu = nn.LeakyReLU(negative_slope=<span class="number">0.01</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>可视化和对比</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">x = np.linspace(-<span class="number">10</span>, <span class="number">10</span>, <span class="number">1000</span>)</span><br><span class="line">relu = np.maximum(<span class="number">0</span>, x)</span><br><span class="line">leaky_relu = np.where(x &gt; <span class="number">0</span>, x, <span class="number">0.01</span> * x)</span><br><span class="line"></span><br><span class="line">plt.plot(x, relu, label=<span class="string">&quot;ReLU&quot;</span>)</span><br><span class="line">plt.plot(x, leaky_relu, label=<span class="string">&quot;Leaky ReLU&quot;</span>)</span><br><span class="line">plt.axhline(<span class="number">0</span>, color=<span class="string">&#x27;gray&#x27;</span>, linestyle=<span class="string">&#x27;--&#x27;</span>, linewidth=<span class="number">0.5</span>)</span><br><span class="line">plt.legend()</span><br><span class="line">plt.title(<span class="string">&quot;ReLU vs Leaky ReLU&quot;</span>)</span><br><span class="line">plt.grid(<span class="literal">True</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p><img src="ReLUvsLeakyReLU.png" alt="ReLUvsLeakyReLU"></p>
+<h1 id="4-%E6%80%BB%E7%BB%93%E4%B8%8E%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE" tabindex="-1">4 总结与选择建议</h1>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>ReLU（Rectified Linear Unit）</th>
+<th>Leaky ReLU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数学表达式</td>
+<td>f(x) = max(0, x)</td>
+<td>f(x) = x (x &gt; 0), αx (x ≤ 0), α 通常为 0.01</td>
+</tr>
+<tr>
+<td>非线性</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>是否允许负值通过</td>
+<td>否，负值直接输出 0</td>
+<td>是，负值被缩放（αx）</td>
+</tr>
+<tr>
+<td>是否容易导致神经元失活</td>
+<td>是（“神经元死亡” 问题）</td>
+<td>否，可以缓解该问题</td>
+</tr>
+<tr>
+<td>计算效率</td>
+<td>高（非常简单）</td>
+<td>略低（多一个乘法）</td>
+</tr>
+<tr>
+<td>使用的超参数</td>
+<td>无</td>
+<td>需要选择或设定泄漏因子 α</td>
+</tr>
+<tr>
+<td>常见使用场景</td>
+<td>通用神经网络中默认的激活函数</td>
+<td>在出现大量死神经元或训练不稳定时尝试使用</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>激活函数</th>
+<th>推荐使用情况</th>
+<th>理由说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ReLU</td>
+<td>✅ 默认优先选择（尤其是简单网络）</td>
+<td>计算开销小，效果好，已被大量实验证明有效，是深度网络的标准激活函数。</td>
+</tr>
+<tr>
+<td>Leaky ReLU</td>
+<td>⚠️ ReLU 出现大量“神经元死亡”时</td>
+<td>引入负数区域的非零梯度，有助于避免神经元在训练中“死掉”，提升梯度流动性和收敛稳定性</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>如果你 初次搭建神经网络模型，建议从 ReLU 开始。</li>
+<li>如果你在训练中发现 loss 不下降、部分神经元长期输出为 0，可以尝试切换到 Leaky ReLU。</li>
+<li>在一些 对梯度传播更敏感的任务或深层网络中，Leaky ReLU 更能保障梯度不为 0。</li>
+</ul>
+<p><strong>为什么不直接一开始就用Leaky ReLU呢？</strong></p>
+<ol>
+<li>ReLU更简单，而且计算代价更低。Leaky ReLU中的斜率参数在大规模模型中影响性能。</li>
+<li>α作为超参数，在不同任务或数据分布时适合各敏感值，需要调参。</li>
+</ol>
+</div><div class="article-licensing box"><div class="licensing-title"><p>激活函数-ReLU-LeakyReLU</p><p><a href="https://zhouwentong7.github.io/2025/04/12/激活函数-ReLU-LeakyReLU/">https://zhouwentong7.github.io/2025/04/12/激活函数-ReLU-LeakyReLU/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Zhou</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2025-04-12</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2025-04-12</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/deep-learning/">deep learning</a><a class="link-muted mr-2" rel="tag" href="/tags/pytorch/">pytorch</a><a class="link-muted mr-2" rel="tag" href="/tags/Activation-Function/">Activation Function</a><a class="link-muted mr-2" rel="tag" href="/tags/ReLU/">ReLU</a><a class="link-muted mr-2" rel="tag" href="/tags/Leaky-ReLU/">Leaky ReLU</a></div><div class="sharethis-inline-share-buttons"></div><script src="None" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="https://ifdian.net/a/a_little_corner" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>爱发电</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/None" alt="支付宝"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/img/wechatPay.jpg" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/04/10/Attention-Gate-in-Attention-UNet/"><span class="level-item">Attention Gate in Attention UNet</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "7e5d80021cde2694bada4f28762bb54c",
+            repo: "ZhouWentong7.github.io",
+            owner: "ZhouWentong7",
+            clientID: "Ov23ligZ57M4OmBZPjFL",
+            clientSecret: "dbf28ece71a56afb30b2475d2de8005c5c0ae49c",
+            admin: ["ZhouWentong7"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/DSCF4111.JPG" alt="周大猛"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">周大猛</p><p class="is-size-6 is-block">擅长写三流的代码,一流的bug</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">34</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">20</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">39</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/ZhouWentong7" target="_blank" rel="noopener">关注我</a></div><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Facebook" href="https://facebook.com"><i class="fab fa-facebook"></i></a><a class="level-item button is-transparent is-marginless" target="_blank" rel="noopener" title="Twitter" href="https://twitter.com"><i class="fab fa-twitter"></i></a></div></div></div><!--!--><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://hexo.io" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Hexo</span></span><span class="level-right"><span class="level-item tag">hexo.io</span></span></a></li></ul></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-04-11T15:04:30.000Z">2025-04-12</time></p><p class="title"><a href="/2025/04/12/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0-ReLU-LeakyReLU/">激活函数-ReLU-LeakyReLU</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-04-09T16:15:48.000Z">2025-04-10</time></p><p class="title"><a href="/2025/04/10/Attention-Gate-in-Attention-UNet/">Attention Gate in Attention UNet</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-04-05T15:25:51.000Z">2025-04-06</time></p><p class="title"><a href="/2025/04/06/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-Softmax/">深度学习-Softmax</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-04-05T14:59:39.000Z">2025-04-05</time></p><p class="title"><a href="/2025/04/05/%E4%BA%A4%E5%8F%89%E7%86%B5%E7%9A%84%E6%95%B0%E5%AD%A6%E6%8E%A8%E5%AF%BC%E4%B8%8E%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0/">交叉熵的数学推导与代码实现</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-04-03T05:57:03.000Z">2025-04-03</time></p><p class="title"><a href="/2025/04/03/Leetcode-Hot100-Hash/">Leetcode-Hot100-Hash</a></p><p class="categories"><a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a> / <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/Leetcode/">Leetcode</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2025/"><span class="level-start"><span class="level-item">2025</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2024/"><span class="level-start"><span class="level-item">2024</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2023/"><span class="level-start"><span class="level-item">2023</span></span><span class="level-end"><span class="level-item tag">15</span></span></a></li></ul></div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">订阅更新</h3><form action="https://feedburner.google.com/fb/a/mailverify" method="post" target="popupwindow" onsubmit="window.open(&#039;https://feedburner.google.com/fb/a/mailverify?uri=&#039;,&#039;popupwindow&#039;,&#039;scrollbars=yes,width=550,height=520&#039;);return true"><input type="hidden" value="" name="uri"><input type="hidden" name="loc" value="en_US"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="card widget"><div class="card-content"><div class="notification is-danger">You need to set <code>client_id</code> and <code>slot_id</code> to show this AD unit. Please set it in <code>_config.yml</code>.</div></div></div><div class="card widget" data-type="subscribe-email"><div class="card-content"><div class="menu"><h3 class="menu-label">follow.it</h3><form action="" method="post" target="_blank"><div class="field has-addons"><div class="control has-icons-left is-expanded"><input class="input" name="email" type="email" placeholder="Email"><span class="icon is-small is-left"><i class="fas fa-envelope"></i></span></div><div class="control"><input class="button" type="submit" value="订阅"></div></div></form></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技术学习</span></span><span class="level-end"><span class="level-item tag">7</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">深度学习</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技能学习</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Hexo/"><span class="level-start"><span class="level-item">Hexo</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/%E7%8E%AF%E5%A2%83/"><span class="level-start"><span class="level-item">环境</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/%E9%85%8D%E7%BD%AE/"><span class="level-start"><span class="level-item">配置</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/markdown/"><span class="level-start"><span class="level-item">markdown</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/"><span class="level-start"><span class="level-item">代码管理</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E7%A1%AC%E4%BB%B6/"><span class="level-start"><span class="level-item">硬件</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/"><span class="level-start"><span class="level-item">生活</span></span><span class="level-end"><span class="level-item tag">8</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E7%95%99%E5%AD%A6/"><span class="level-start"><span class="level-item">留学</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E7%A2%8E%E7%A2%8E%E5%BF%B5/"><span class="level-start"><span class="level-item">碎碎念</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E9%98%85%E8%AF%BB/"><span class="level-start"><span class="level-item">阅读</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/"><span class="level-start"><span class="level-item">知识科普</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/%E8%AE%A1%E7%AE%97%E6%9C%BA/"><span class="level-start"><span class="level-item">计算机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">计算机基础</span></span><span class="level-end"><span class="level-item tag">2</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/Leetcode/"><span class="level-start"><span class="level-item">Leetcode</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Activation-Function/"><span class="tag">Activation Function</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Attention/"><span class="tag">Attention</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C%E8%AF%AD%E8%A8%80/"><span class="tag">C语言</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Image-Segmentation/"><span class="tag">Image Segmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Leaky-ReLU/"><span class="tag">Leaky ReLU</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ReLU/"><span class="tag">ReLU</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Windows/"><span class="tag">Windows</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/deep-learning/"><span class="tag">deep learning</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-learning/"><span class="tag">machine learning</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/markdown/"><span class="tag">markdown</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/softmax/"><span class="tag">softmax</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%86%99%E4%BD%9C/"><span class="tag">写作</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%93%88%E5%B8%8C/"><span class="tag">哈希</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/"><span class="tag">排序算法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95/"><span class="tag">搜索算法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"><span class="tag">数据恢复</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/"><span class="tag">文件读取</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%A0%88/"><span class="tag">栈</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/"><span class="tag">激活函数</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%9F%E6%B4%BB/"><span class="tag">生活</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6/"><span class="tag">硬件</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/"><span class="tag">碎碎念</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E7%A0%94/"><span class="tag">科研</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87/"><span class="tag">评价指标</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/"><span class="tag">读后感</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%93%BE%E8%A1%A8/"><span class="tag">链表</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%8B%8D/"><span class="tag">随拍</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/"><span class="tag">项目分享</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/"><span class="tag">项目管理</span><span class="tag">2</span></a></div></div></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">一个小角落</a><p class="is-size-7"><span>&copy; 2025 Zhou</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
