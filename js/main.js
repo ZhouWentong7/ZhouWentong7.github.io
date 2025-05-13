@@ -138,3 +138,34 @@
         $('.navbar-main .catalogue').on('click', toggleToc);
     }
 }(jQuery, window.moment, window.ClipboardJS, window.IcarusThemeSettings));
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     // 创建夜间模式切换按钮
+//     const toggleButton = document.createElement('button');
+//     toggleButton.innerText = '🌙';  // 可以根据需求换成图标或其他文字
+//     toggleButton.style.position = 'fixed';
+//     toggleButton.style.top = '20px';
+//     toggleButton.style.right = '20px';
+//     toggleButton.style.zIndex = '1000';
+//     toggleButton.style.padding = '10px';
+//     toggleButton.style.borderRadius = '50%';
+//     toggleButton.style.border = 'none';
+//     toggleButton.style.background = '#333';
+//     toggleButton.style.color = '#fff';
+//     toggleButton.style.cursor = 'pointer';
+//     toggleButton.style.transition = 'background-color 0.3s ease';  // 按钮渐变
+
+//     // 点击按钮时切换夜间模式
+//     toggleButton.onclick = function () {
+//         document.body.classList.toggle('dark-mode');
+//         // 更新按钮的文字或图标
+//         if (document.body.classList.contains('dark-mode')) {
+//             toggleButton.innerText = '☀️';  // 白天模式图标
+//         } else {
+//             toggleButton.innerText = '🌙';  // 夜间模式图标
+//         }
+//     };
+
+//     // 将按钮添加到页面
+//     document.body.appendChild(toggleButton);
+// });
