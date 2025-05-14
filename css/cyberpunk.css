@@ -11682,6 +11682,15 @@ figure.highlight.foldable div.level-left {
     padding: 1.5rem 1rem;
   }
 }
+.gt-comment-admin .gt-comment-username::after {
+  content: "作者";
+  background-color: #f39c12;
+  color: #fff;
+  font-size: 12px;
+  padding: 2px 6px;
+  margin-left: 6px;
+  border-radius: 4px;
+}
 body {
   counter-reset: card;
 }
