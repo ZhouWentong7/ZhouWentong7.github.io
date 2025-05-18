@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>贝叶斯与频率派 - 在代码中遨游</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="在代码中遨游"><meta name="msapplication-TileImage" content="/img/bamboo.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="在代码中遨游"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="准备开始阅读《概率论沉思录》。 之前在看B站的《机器学习-白板推导系列》的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。 先从这两个派系开始."><meta property="og:type" content="blog"><meta property="og:title" content="贝叶斯与频率派"><meta property="og:url" content="https://zhouwentong7.github.io/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/"><meta property="og:site_name" content="在代码中遨游"><meta property="og:description" content="准备开始阅读《概率论沉思录》。 之前在看B站的《机器学习-白板推导系列》的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。 先从这两个派系开始."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://zhouwentong7.github.io/img/og_image.png"><meta property="article:published_time" content="2025-05-18T09:00:46.000Z"><meta property="article:modified_time" content="2025-05-18T09:00:46.296Z"><meta property="article:author" content="Zhou"><meta property="article:tag" content="概率论"><meta property="article:tag" content="贝叶斯"><meta property="article:tag" content="频率派"><meta property="article:tag" content="机器学习基础"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://zhouwentong7.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhouwentong7.github.io/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/"},"headline":"贝叶斯与频率派","image":["https://zhouwentong7.github.io/img/og_image.png"],"datePublished":"2025-05-18T09:00:46.000Z","dateModified":"2025-05-18T09:00:46.296Z","author":{"@type":"Person","name":"Zhou"},"publisher":{"@type":"Organization","name":"在代码中遨游","logo":{"@type":"ImageObject","url":{"text":"一个小角落"}}},"description":"准备开始阅读《概率论沉思录》。 之前在看B站的《机器学习-白板推导系列》的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。 先从这两个派系开始."}</script><link rel="canonical" href="https://zhouwentong7.github.io/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/"><link rel="icon" href="/img/bamboo.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/github.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">一个小角落</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-18T09:00:46.000Z" title="2025/5/18 18:00:46">2025-05-18</time>发表</span><span class="level-item"><time dateTime="2025-05-18T09:00:46.296Z" title="2025/5/18 18:00:46">2025-05-18</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a><span> / </span><a class="link-muted" href="/categories/%E7%94%9F%E6%B4%BB/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a></span><span class="level-item">16 分钟读完 (大约2359个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">贝叶斯与频率派</h1><div class="content"><p>准备开始阅读《概率论沉思录》。</p>
+<p>之前在看B站的<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1aE411o7qd/?spm_id_from=333.337.search-card.all.click&amp;vd_source=69a3eecb8fce5149ffe1597cbbfc9364">《机器学习-白板推导系列》</a>的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。</p>
+<p>先从这两个派系开始.</p>
+<span id="more"></span>
+<h1 id="%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B8%AD%E7%9A%84%E4%B8%A4%E5%A4%A7%E6%B4%BE%E7%B3%BB%3A%E9%A2%91%E7%8E%87%E5%AD%A6%E6%B4%BE(frequentist)%E3%80%81%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AD%A6%E6%B4%BE%EF%BC%88bayesian%EF%BC%89" tabindex="-1">统计学中的两大派系:频率学派(Frequentist)、贝叶斯学派（Bayesian）</h1>
+<p>自从接触到数学之后，我总是在幻想，我们是不是可以通过一套非常严谨的数学公式，模拟出这个世界的运行规律？</p>
+<p>其中概率是我直觉上感觉最为有可能找打这个规律的工具。从机器学习的角度来看，似乎有这个可能。</p>
+<p>把这个想法践行到极致的，我想就是统计学的学者们吧。而统计推断中有两种主要的方法：<strong>频率论</strong>和<strong>贝叶斯</strong>，区别在于他们对<strong>不确定性</strong>的解释不同。<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup></p>
+<p>这两个学派的争论也持续了多年，甚至牵扯到了哲学和意识形态上的争论<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup>。</p>
+<p>《概率论沉思录》的作者E.T.Jaynes是坚定的贝叶斯支持者，现在贝叶斯的优越性已经在上百个领域中得到充分的验证。</p>
+<p>但作为一个数学小白，我想首先我应该去总结了解一下频率派和贝叶斯之间的区别。</p>
+<h1 id="%E9%A2%91%E7%8E%87%E6%B4%BE%EF%BC%88frequentist%EF%BC%89" tabindex="-1">频率派（Frequentist）</h1>
+<article class="message is-info is-default">
+        <div class="message-header"><p><i class="fa-solid fa-lightbulb mr-2"></i>核心观点</p>
+</div>
+        <div class="message-body">
+            <p>事件的概率就是无限重复实验中发生的<strong>频率</strong>。这个概率函数的参数是<strong>固定但未知</strong>的常数。</p>
+
+        </div>
+    </article>
+<p>假设$X$ 是数据，$\theta$是参数：</p>
+<p>$$<br>
+X = \begin{bmatrix}<br>
+x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1P} \<br>
+x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2P} \<br>
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \<br>
+x_{N1} &amp; x_{N2} &amp; \cdots &amp; x_{NP}<br>
+\end{bmatrix}<br>
+$$</p>
+<p>$X$服从一个概率模型：<br>
+$$<br>
+x \sim p(x|\theta)<br>
+$$</p>
+<p>在频率派中，他们认为这个$\theta$是一个未知的常量，而$X$是随机变量（r.v）。他们关心的是数据，需要把这个$\theta$估计出来，最常用的就是<strong>最大似然估计</strong><sup class="footnote-ref"><a href="#fn3" id="fnref3">[3]</a></sup>。</p>
+<blockquote>
+<p>最大似然估计：常用的估计概率模型参数的方法：在所有可能的参数中，找出最有可能“生成”我们观察到的数据的那一组参数。</p>
+</blockquote>
+<p>一般形式：<br>
+$$<br>
+\hat{\theta}<em>{\mathrm{MLE}} = \arg\max</em>{\theta} , p(x \mid \theta)<br>
+$$</p>
+<ul>
+<li>找到一组参数$theta$,使似然函数$p(x|\theta)$最大化，也就是找到“最可能”生成数据x的参数值。</li>
+</ul>
+<p>多个样本且保持独立同分布：<br>
+$$<br>
+\hat{\theta}<em>{\mathrm{MLE}} = \arg\max</em>{\theta} \prod_{i=1}^{n} p(x_i \mid \theta)<br>
+$$</p>
+<p>对数化表示：<br>
+$$<br>
+\hat{\theta}<em>{\mathrm{MLE}} = \arg\max</em>{\theta} \sum_{i=1}^{n} \log p(x_i \mid \theta)<br>
+$$</p>
+<blockquote>
+<p>log是为了便于运算，这样连乘就变成了连加。</p>
+</blockquote>
+<p>也会使用<strong>置信区间与假设</strong>来辅助决策。比如：若p值小于0.05，则拒绝原假设。</p>
+<p>频率派发展出来的模型一般来说称为**：统计机器学习**。本质上来说是一个<strong>优化问题</strong>。</p>
+<ol>
+<li>建立一个模型</li>
+<li>设计loss function</li>
+<li>具体的算法：梯度下降……</li>
+</ol>
+<h1 id="%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%B4%BE%EF%BC%88bayesian%EF%BC%89" tabindex="-1">贝叶斯派（Bayesian）</h1>
+<article class="message is-info is-default">
+        <div class="message-header"><p><i class="fa-solid fa-lightbulb mr-2"></i>核心观点</p>
+</div>
+        <div class="message-body">
+            <p>参数和假设被视为概率分布，数据则被视为固定的。假设先验知识的存在，然后再用采样逐渐修改先验知识并逼近真实知识。</p>
+
+        </div>
+    </article>
+<ul>
+<li>$\theta$: r.v, $\theta \sim p(\theta)$</li>
+</ul>
+<blockquote>
+<p>通常情况下，我们称这个$p(\theta)$为先验概率。</p>
+</blockquote>
+<p>先验是频率论和贝叶斯推理之间的主要区别之间，频率论分析的结果主要基于数据，而先验可以由专家信念、历史数据或两者组合决定。</p>
+<p>借助贝叶斯定理，将先验（Prior）和后验(Posterior)用似然联系在一起。</p>
+<p>$$<br>
+Posterior = \frac{Likelihood \times Prior}{Evidence}<br>
+$$</p>
+<p>也就是：</p>
+<p>$$<br>
+P(\theta|X) =\frac{P(X|\theta)P(\theta)}{P(X)}<br>
+$$</p>
+<ul>
+<li>$P(\theta|X)$<strong>后验概率</strong>：观察到数据$X$后，参数$\theta$取某个值的概率。</li>
+<li>$P(X|\theta)$<strong>似然函数</strong>：在参数$theta$的前提下，观测到数据$X$的概率。</li>
+<li>$P(\theta)$<strong>先验概率</strong>：在观测到数据前，我们对$\theta$f的信念。</li>
+<li>$P(X)$<strong>边际似然marginal likelihood</strong>：又称证据，在没有知道具体$theta$是多少的前提下，观测到数据$X$的总概率。</li>
+</ul>
+<p>其中$P(X)$的数学形式是：<br>
+$$<br>
+P(X) = \int P(X \mid \theta) , P(\theta) , d\theta<br>
+$$<br>
+也就是说，把所有可能的参数值下数据的可能性（加权先验）都加总起来。</p>
+<p>这里我们引入<strong>MAP：最大后验估计（Maximum A Posteriori estimation）</strong>。</p>
+<p>因为$theta$是一个分布，我们找到一个合适的值，使这个后验概率最大。</p>
+<p>$$<br>
+\hat{\theta}<em>{\text{MAP}} = \arg\max</em>{\theta} P(\theta \mid X)<br>
+$$<br>
+也就是说，MAP估计是在最大化 <strong>似然函数</strong> 与 <strong>先验分布</strong> 的乘积。</p>
+<p><strong>贝叶斯估计</strong>：观察到数据$X$后，基于后验分布，对参数$\theta$进行推断。MAP是贝叶斯估计的一个特例。</p>
+<p>而求这个后验概率的其中一个目的，就是在贝叶斯预测中，预测新数据$x_{new}$的分布：<br>
+$$<br>
+P(x_{\text{new}} \mid X) = \int P(x_{\text{new}} \mid \theta) \cdot P(\theta \mid X) , d\theta<br>
+$$</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>(x_{\text{new}})</td>
+<td>想要预测的新数据点</td>
+</tr>
+<tr>
+<td>(X)</td>
+<td>已经观察到的数据</td>
+</tr>
+<tr>
+<td>(\theta)</td>
+<td>模型的未知参数</td>
+</tr>
+<tr>
+<td>(P(\theta \mid X))</td>
+<td>后验分布：在观察 (X) 之后对参数的认知</td>
+</tr>
+<tr>
+<td>(P(x_{\text{new}} \mid \theta))</td>
+<td>参数给定下新数据的生成概率</td>
+</tr>
+<tr>
+<td>(\int \cdots d\theta)</td>
+<td>对所有可能的参数值加权平均</td>
+</tr>
+</tbody>
+</table>
+<p>我们不知道真实的 (\theta)，所以不直接用一个点估计，而是：</p>
+<blockquote>
+<p><strong>利用后验分布 (P(\theta \mid X))</strong>，<br>
+对所有可能的 (\theta) 进行加权，得到新样本的综合预测分布。</p>
+</blockquote>
+<p>然后，从贝叶斯发展出来的就是概率图模型（求积分问题）。（因为上述这些公式的积分，在高纬、多变量、复杂模型中太难算了，往往没有解析解）</p>
+<ul>
+<li>解析解求不出啦，就用<strong>蒙特卡洛</strong>等方法来求积分。</li>
+</ul>
+<blockquote>
+<p>概率图模型和蒙特卡洛以后解释<br>
+蒙特卡洛方法（Monte Carlo Methods）的简单说明：“采样 + 平均”来近似积分的数值方法</p>
+</blockquote>
+<p>在贝叶斯推论中，前一次得到的后验概率分布可以视作下一次的先验概率。<br>
+在数据量趋近于无限时，频率派和贝叶斯派得到的结果是一致的，有一种说法是频率方法是贝叶斯方法的极限<sup class="footnote-ref"><a href="#fn4" id="fnref4">[4]</a></sup>。</p>
+<p>所以在实验次数较少的时候，贝叶斯方法非常有用，将先验知识纳入考虑，获得的数据越多，先验概率更新到后验分布。</p>
+<h1 id="%E6%80%BB%E7%BB%93" tabindex="-1">总结</h1>
+<table>
+<thead>
+<tr>
+<th>方面</th>
+<th>频率派 (Frequentist)</th>
+<th>贝叶斯派 (Bayesian)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>概率定义</td>
+<td>事件发生的频率，基于大量重复试验</td>
+<td>对未知参数的主观信念，用概率分布描述</td>
+</tr>
+<tr>
+<td>参数</td>
+<td>固定但未知的常数</td>
+<td>随机变量，有先验分布</td>
+</tr>
+<tr>
+<td>核心方法</td>
+<td>最大似然估计（MLE）、置信区间、假设检验</td>
+<td>贝叶斯定理，后验概率，最大后验估计（MAP）</td>
+</tr>
+<tr>
+<td>不确定性处理</td>
+<td>仅通过数据，参数无概率分布</td>
+<td>利用先验知识结合数据，参数带概率分布</td>
+</tr>
+<tr>
+<td>目标</td>
+<td>估计参数的“真实值”</td>
+<td>得到参数的后验分布，更全面表达不确定性</td>
+</tr>
+<tr>
+<td>预测</td>
+<td>基于估计参数做点预测</td>
+<td>通过后验分布对新数据进行概率预测</td>
+</tr>
+<tr>
+<td>计算挑战</td>
+<td>通常优化问题，计算相对简单</td>
+<td>需计算积分，复杂模型时用蒙特卡洛等数值方法</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>大样本，缺少先验信息</td>
+<td>样本少且有先验知识时更有效</td>
+</tr>
+<tr>
+<td>哲学基础</td>
+<td>客观频率主义</td>
+<td>主观概率主义</td>
+</tr>
+<tr>
+<td>代表学者</td>
+<td>Ronald Fisher，Jerzy Neyman，Egon Pearson</td>
+<td>Thomas Bayes，Pierre-Simon Laplace，E.T. Jaynes</td>
+</tr>
+</tbody>
+</table>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn1" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://www.redjournal.org/article/S0360-3016(21)03256-9/fulltext">Understanding the Differences Between Bayesian and Frequentist Statistics</a>：是文章也是播客，讲述了频率派和贝叶斯之间的差异，讨论两种方法的潜在优缺点。 <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn2" class="footnote-item"><p>《概率论沉思录》——E.T.Jaynes <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn3" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1aE411o7qd/?p=2&amp;share_source=copy_web&amp;vd_source=fe1e50f3e19ee2c5f4cd32de1f11a963">B站机器学习白板推导系列</a> <a href="#fnref3" class="footnote-backref">↩︎</a></p>
+</li>
+<li id="fn4" class="footnote-item"><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/337637096">统计学里频率学派(Frequentist)与贝叶斯(Bayesian)学派的区别和在机器学习中的应用</a> <a href="#fnref4" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+</div><div class="article-licensing box"><div class="licensing-title"><p>贝叶斯与频率派</p><p><a href="https://zhouwentong7.github.io/2025/05/18/贝叶斯与频率派/">https://zhouwentong7.github.io/2025/05/18/贝叶斯与频率派/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Zhou</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2025-05-18</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2025-05-18</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/">概率论</a><a class="link-muted mr-2" rel="tag" href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/">贝叶斯</a><a class="link-muted mr-2" rel="tag" href="/tags/%E9%A2%91%E7%8E%87%E6%B4%BE/">频率派</a><a class="link-muted mr-2" rel="tag" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/">机器学习基础</a></div><div class="sharethis-inline-share-buttons"></div><script src="None" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="https://ifdian.net/a/a_little_corner" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>爱发电</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/img/alipay.jpg" alt="支付宝"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/img/wechatpay.jpg" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2025/05/12/Hexo%E6%A0%87%E7%AD%BECallOut%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/"><span class="level-item">Hexo标签CallOut使用方法</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "d1de230377cbb5982e3c249a53db062a",
+            repo: "ZhouWentong7.github.io",
+            owner: "ZhouWentong7",
+            clientID: "Ov23ligZ57M4OmBZPjFL",
+            clientSecret: "dbf28ece71a56afb30b2475d2de8005c5c0ae49c",
+            admin: ["ZhouWentong7"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-18T09:00:46.000Z">2025-05-18</time></p><p class="title"><a href="/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/">贝叶斯与频率派</a></p><p class="categories"><a href="/categories/%E7%94%9F%E6%B4%BB/">生活</a> / <a href="/categories/%E7%94%9F%E6%B4%BB/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-12T14:49:35.000Z">2025-05-12</time></p><p class="title"><a href="/2025/05/12/Hexo%E6%A0%87%E7%AD%BECallOut%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95/">Hexo标签CallOut使用方法</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Hexo/">Hexo</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-12T08:15:37.000Z">2025-05-12</time></p><p class="title"><a href="/2025/05/12/%E7%AC%94%E8%AE%B0%E6%9C%AC%E7%94%B5%E8%84%91%E9%83%A8%E7%BD%B2BitNet/">笔记本电脑部署BitNet</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LLM/">LLM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-11T11:58:24.000Z">2025-05-11</time></p><p class="title"><a href="/2025/05/11/wls%E4%B8%8Evscode/">wsl与vscode</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/wsl/">wsl</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-09T14:19:41.000Z">2025-05-09</time></p><p class="title"><a href="/2025/05/09/wsl2%E9%85%8D%E7%BD%AE%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83-1/">wsl2配置开发环境-1</a></p><p class="categories"><a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/">技能学习</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/">Linux</a> / <a href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/wsl/">wsl</a></p></div></article></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技术学习</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">深度学习</span></span><span class="level-end"><span class="level-item tag">13</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LLM/"><span class="level-start"><span class="level-item">LLM</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技能学习</span></span><span class="level-end"><span class="level-item tag">19</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Hexo/"><span class="level-start"><span class="level-item">Hexo</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/%E7%8E%AF%E5%A2%83/"><span class="level-start"><span class="level-item">环境</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/wsl/"><span class="level-start"><span class="level-item">wsl</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/%E9%85%8D%E7%BD%AE/"><span class="level-start"><span class="level-item">配置</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/markdown/"><span class="level-start"><span class="level-item">markdown</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/"><span class="level-start"><span class="level-item">代码管理</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E7%A1%AC%E4%BB%B6/"><span class="level-start"><span class="level-item">硬件</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/"><span class="level-start"><span class="level-item">生活</span></span><span class="level-end"><span class="level-item tag">9</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E7%95%99%E5%AD%A6/"><span class="level-start"><span class="level-item">留学</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E7%A2%8E%E7%A2%8E%E5%BF%B5/"><span class="level-start"><span class="level-item">碎碎念</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">读书笔记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E9%98%85%E8%AF%BB/"><span class="level-start"><span class="level-item">阅读</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/"><span class="level-start"><span class="level-item">知识科普</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/%E8%AE%A1%E7%AE%97%E6%9C%BA/"><span class="level-start"><span class="level-item">计算机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">计算机基础</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/Leetcode/"><span class="level-start"><span class="level-item">Leetcode</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/AMP/"><span class="tag">AMP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Activation-Function/"><span class="tag">Activation Function</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Attention/"><span class="tag">Attention</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BFS/"><span class="tag">BFS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BatchNorm/"><span class="tag">BatchNorm</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BitNet/"><span class="tag">BitNet</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C%E8%AF%AD%E8%A8%80/"><span class="tag">C语言</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DFS/"><span class="tag">DFS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Image-Segmentation/"><span class="tag">Image Segmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/LLM/"><span class="tag">LLM</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/LayerNorm/"><span class="tag">LayerNorm</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Leaky-ReLU/"><span class="tag">Leaky ReLU</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ReLU/"><span class="tag">ReLU</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Sigmoid/"><span class="tag">Sigmoid</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Software-Development/"><span class="tag">Software Development</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Windows/"><span class="tag">Windows</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/deep-learning/"><span class="tag">deep learning</span><span class="tag">12</span></a></div><div class="control"><a class="tags has-addons" href="/tags/front-end/"><span class="tag">front end</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-learning/"><span class="tag">machine learning</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/markdown/"><span class="tag">markdown</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">8</span></a></div><div class="control"><a class="tags has-addons" href="/tags/softmax/"><span class="tag">softmax</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vscode/"><span class="tag">vscode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/wsl/"><span class="tag">wsl</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%86%99%E4%BD%9C/"><span class="tag">写作</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%93%88%E5%B8%8C/"><span class="tag">哈希</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE/"><span class="tag">图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/"><span class="tag">排序算法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95/"><span class="tag">搜索算法</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"><span class="tag">数据恢复</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/"><span class="tag">文件读取</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/"><span class="tag">机器学习基础</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%A0%88/"><span class="tag">栈</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/"><span class="tag">概率论</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/"><span class="tag">激活函数</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%9F%E6%B4%BB/"><span class="tag">生活</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6/"><span class="tag">硬件</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/"><span class="tag">碎碎念</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E7%A0%94/"><span class="tag">科研</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF%E5%91%BD%E4%BB%A4/"><span class="tag">终端命令</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87/"><span class="tag">评价指标</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/"><span class="tag">读后感</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/"><span class="tag">贝叶斯</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%93%BE%E8%A1%A8/"><span class="tag">链表</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%8B%8D/"><span class="tag">随拍</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/"><span class="tag">项目分享</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/"><span class="tag">项目管理</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%91%E7%8E%87%E6%B4%BE/"><span class="tag">频率派</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#%E7%BB%9F%E8%AE%A1%E5%AD%A6%E4%B8%AD%E7%9A%84%E4%B8%A4%E5%A4%A7%E6%B4%BE%E7%B3%BB%3A%E9%A2%91%E7%8E%87%E5%AD%A6%E6%B4%BE(frequentist)%E3%80%81%E8%B4%9D%E5%8F%B6%E6%96%AF%E5%AD%A6%E6%B4%BE%EF%BC%88bayesian%EF%BC%89"><span class="level-left"><span class="level-item">1</span><span class="level-item">统计学中的两大派系:频率学派(Frequentist)、贝叶斯学派（Bayesian）</span></span></a></li><li><a class="level is-mobile" href="#%E9%A2%91%E7%8E%87%E6%B4%BE%EF%BC%88frequentist%EF%BC%89"><span class="level-left"><span class="level-item">2</span><span class="level-item">频率派（Frequentist）</span></span></a></li><li><a class="level is-mobile" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E6%B4%BE%EF%BC%88bayesian%EF%BC%89"><span class="level-left"><span class="level-item">3</span><span class="level-item">贝叶斯派（Bayesian）</span></span></a></li><li><a class="level is-mobile" href="#%E6%80%BB%E7%BB%93"><span class="level-left"><span class="level-item">4</span><span class="level-item">总结</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">一个小角落</a><p class="is-size-7"><span>&copy; 2025 Zhou</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Go to My GitHub" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script>+           +           +           <script src="https://cdn.jsdelivr.net/npm/mermaid@10.4.0/dist/mermaid.min.js"></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
