@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>贝叶斯与频率派 - 在代码中遨游</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="在代码中遨游"><meta name="msapplication-TileImage" content="/img/bamboo.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="在代码中遨游"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="准备开始阅读《概率论沉思录》。 之前在看B站的《机器学习-白板推导系列》的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。 先从这两个派系开始."><meta property="og:type" content="blog"><meta property="og:title" content="贝叶斯与频率派"><meta property="og:url" content="https://zhouwentong7.github.io/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/"><meta property="og:site_name" content="在代码中遨游"><meta property="og:description" content="准备开始阅读《概率论沉思录》。 之前在看B站的《机器学习-白板推导系列》的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。 先从这两个派系开始."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://zhouwentong7.github.io/img/og_image.png"><meta property="article:published_time" content="2025-05-18T09:00:46.000Z"><meta property="article:modified_time" content="2025-05-18T09:00:46.296Z"><meta property="article:author" content="Zhou"><meta property="article:tag" content="概率论"><meta property="article:tag" content="贝叶斯"><meta property="article:tag" content="频率派"><meta property="article:tag" content="机器学习基础"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://zhouwentong7.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhouwentong7.github.io/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/"},"headline":"贝叶斯与频率派","image":["https://zhouwentong7.github.io/img/og_image.png"],"datePublished":"2025-05-18T09:00:46.000Z","dateModified":"2025-05-18T09:00:46.296Z","author":{"@type":"Person","name":"Zhou"},"publisher":{"@type":"Organization","name":"在代码中遨游","logo":{"@type":"ImageObject","url":{"text":"一个小角落"}}},"description":"准备开始阅读《概率论沉思录》。 之前在看B站的《机器学习-白板推导系列》的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。 先从这两个派系开始."}</script><link rel="canonical" href="https://zhouwentong7.github.io/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/"><link rel="icon" href="/img/bamboo.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/github.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>贝叶斯与频率派 - 在代码中遨游</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="在代码中遨游"><meta name="msapplication-TileImage" content="/img/bamboo.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="在代码中遨游"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="准备开始阅读《概率论沉思录》。 之前在看B站的《机器学习-白板推导系列》的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。 先从这两个派系开始."><meta property="og:type" content="blog"><meta property="og:title" content="贝叶斯与频率派"><meta property="og:url" content="https://zhouwentong7.github.io/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/"><meta property="og:site_name" content="在代码中遨游"><meta property="og:description" content="准备开始阅读《概率论沉思录》。 之前在看B站的《机器学习-白板推导系列》的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。 先从这两个派系开始."><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://zhouwentong7.github.io/img/og_image.png"><meta property="article:published_time" content="2025-05-18T09:00:46.000Z"><meta property="article:modified_time" content="2025-05-18T09:09:08.324Z"><meta property="article:author" content="Zhou"><meta property="article:tag" content="概率论"><meta property="article:tag" content="贝叶斯"><meta property="article:tag" content="频率派"><meta property="article:tag" content="机器学习基础"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://zhouwentong7.github.io/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhouwentong7.github.io/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/"},"headline":"贝叶斯与频率派","image":["https://zhouwentong7.github.io/img/og_image.png"],"datePublished":"2025-05-18T09:00:46.000Z","dateModified":"2025-05-18T09:09:08.324Z","author":{"@type":"Person","name":"Zhou"},"publisher":{"@type":"Organization","name":"在代码中遨游","logo":{"@type":"ImageObject","url":{"text":"一个小角落"}}},"description":"准备开始阅读《概率论沉思录》。 之前在看B站的《机器学习-白板推导系列》的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。 先从这两个派系开始."}</script><link rel="canonical" href="https://zhouwentong7.github.io/2025/05/18/%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%B8%8E%E9%A2%91%E7%8E%87%E6%B4%BE/"><link rel="icon" href="/img/bamboo.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/github.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
   (function () {
       function switchTab() {
           if (!location.hash) {
@@ -29,7 +29,7 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">一个小角落</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-18T09:00:46.000Z" title="2025/5/18 18:00:46">2025-05-18</time>发表</span><span class="level-item"><time dateTime="2025-05-18T09:00:46.296Z" title="2025/5/18 18:00:46">2025-05-18</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a><span> / </span><a class="link-muted" href="/categories/%E7%94%9F%E6%B4%BB/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a></span><span class="level-item">16 分钟读完 (大约2359个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">贝叶斯与频率派</h1><div class="content"><p>准备开始阅读《概率论沉思录》。</p>
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">一个小角落</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-18T09:00:46.000Z" title="2025/5/18 18:00:46">2025-05-18</time>发表</span><span class="level-item"><time dateTime="2025-05-18T09:09:08.324Z" title="2025/5/18 18:09:08">2025-05-18</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a><span> / </span><a class="link-muted" href="/categories/%E7%94%9F%E6%B4%BB/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">读书笔记</a></span><span class="level-item">16 分钟读完 (大约2354个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">贝叶斯与频率派</h1><div class="content"><p>准备开始阅读《概率论沉思录》。</p>
 <p>之前在看B站的<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1aE411o7qd/?spm_id_from=333.337.search-card.all.click&amp;vd_source=69a3eecb8fce5149ffe1597cbbfc9364">《机器学习-白板推导系列》</a>的时候，开篇up对这两个派系进行了简单的讲解，彼时就勾引起了我的兴趣，但后来没有坚持学习下去，就抛之脑后了，现在借着看书的契机，打算好好学习一下这个自己最感兴趣的数学领域。</p>
 <p>先从这两个派系开始.</p>
 <span id="more"></span>
@@ -66,20 +66,21 @@ $$</p>
 <blockquote>
 <p>最大似然估计：常用的估计概率模型参数的方法：在所有可能的参数中，找出最有可能“生成”我们观察到的数据的那一组参数。</p>
 </blockquote>
-<p>一般形式：<br>
-$$<br>
-\hat{\theta}<em>{\mathrm{MLE}} = \arg\max</em>{\theta} , p(x \mid \theta)<br>
+<p>一般形式</p>
+<p>$$<br>
+\hat{\theta}<em>{\mathrm{MLE}} = argmax</em>{ \theta} , p(x \mid<br>
+\theta)<br>
 $$</p>
 <ul>
 <li>找到一组参数$theta$,使似然函数$p(x|\theta)$最大化，也就是找到“最可能”生成数据x的参数值。</li>
 </ul>
 <p>多个样本且保持独立同分布：<br>
 $$<br>
-\hat{\theta}<em>{\mathrm{MLE}} = \arg\max</em>{\theta} \prod_{i=1}^{n} p(x_i \mid \theta)<br>
+\hat{ \theta}<em>{\mathrm{MLE}} = \argmax</em>{\theta} \prod_{i=1}^{n} p(x_i \mid \theta)<br>
 $$</p>
 <p>对数化表示：<br>
 $$<br>
-\hat{\theta}<em>{\mathrm{MLE}} = \arg\max</em>{\theta} \sum_{i=1}^{n} \log p(x_i \mid \theta)<br>
+\hat{ \theta}<em>{ \mathrm{MLE}} = \argmax</em>{\theta} \sum_{i=1}^{n} \log p(x_i \mid \theta)<br>
 $$</p>
 <blockquote>
 <p>log是为了便于运算，这样连乘就变成了连加。</p>
@@ -129,7 +130,7 @@ $$<br>
 <p>这里我们引入<strong>MAP：最大后验估计（Maximum A Posteriori estimation）</strong>。</p>
 <p>因为$theta$是一个分布，我们找到一个合适的值，使这个后验概率最大。</p>
 <p>$$<br>
-\hat{\theta}<em>{\text{MAP}} = \arg\max</em>{\theta} P(\theta \mid X)<br>
+\hat{\theta}<em>{\text{MAP}} = \argmax</em>{\theta} P(\theta \mid X)<br>
 $$<br>
 也就是说，MAP估计是在最大化 <strong>似然函数</strong> 与 <strong>先验分布</strong> 的乘积。</p>
 <p><strong>贝叶斯估计</strong>：观察到数据$X$后，基于后验分布，对参数$\theta$进行推断。MAP是贝叶斯估计的一个特例。</p>
@@ -146,34 +147,34 @@ $$</p>
 </thead>
 <tbody>
 <tr>
-<td>(x_{\text{new}})</td>
+<td>$x_{\text{new}}$</td>
 <td>想要预测的新数据点</td>
 </tr>
 <tr>
-<td>(X)</td>
+<td>$X$</td>
 <td>已经观察到的数据</td>
 </tr>
 <tr>
-<td>(\theta)</td>
+<td>$\theta$</td>
 <td>模型的未知参数</td>
 </tr>
 <tr>
-<td>(P(\theta \mid X))</td>
+<td>$P(\theta \mid X)$</td>
 <td>后验分布：在观察 (X) 之后对参数的认知</td>
 </tr>
 <tr>
-<td>(P(x_{\text{new}} \mid \theta))</td>
+<td>$P(x_{\text{new}} \mid \theta)$</td>
 <td>参数给定下新数据的生成概率</td>
 </tr>
 <tr>
-<td>(\int \cdots d\theta)</td>
+<td>$\int \cdots d\theta$</td>
 <td>对所有可能的参数值加权平均</td>
 </tr>
 </tbody>
 </table>
-<p>我们不知道真实的 (\theta)，所以不直接用一个点估计，而是：</p>
+<p>我们不知道真实的 $\theta$，所以不直接用一个点估计，而是：</p>
 <blockquote>
-<p><strong>利用后验分布 (P(\theta \mid X))</strong>，<br>
+<p><strong>利用后验分布 $P(\theta \mid X)$</strong>，<br>
 对所有可能的 (\theta) 进行加权，得到新样本的综合预测分布。</p>
 </blockquote>
 <p>然后，从贝叶斯发展出来的就是概率图模型（求积分问题）。（因为上述这些公式的积分，在高纬、多变量、复杂模型中太难算了，往往没有解析解）</p>
