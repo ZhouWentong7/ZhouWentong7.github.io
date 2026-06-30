@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>LoRA笔记 - 在代码中遨游</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="在代码中遨游"><meta name="msapplication-TileImage" content="/img/bamboo.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="在代码中遨游"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="LoRA (Low-Rank Adaptation)，一种LLM的微调方法  选择LoRA是因为它通过向变换器层注入可训练的低秩矩阵，主要针对语言模型组件，从而高效适应大型预训练模型。这种方法显著减少了可训练参数的数量，使微调在计算上更轻松，同时保持了强有力的性能。（Kvasir-VQA-x1数据集中介绍）"><meta property="og:type" content="blog"><meta property="og:title" content="LoRA笔记"><meta property="og:url" content="https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/"><meta property="og:site_name" content="在代码中遨游"><meta property="og:description" content="LoRA (Low-Rank Adaptation)，一种LLM的微调方法  选择LoRA是因为它通过向变换器层注入可训练的低秩矩阵，主要针对语言模型组件，从而高效适应大型预训练模型。这种方法显著减少了可训练参数的数量，使微调在计算上更轻松，同时保持了强有力的性能。（Kvasir-VQA-x1数据集中介绍）"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/04-LoRA.png"><meta property="og:image" content="https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/04-LoRA-detail.png"><meta property="og:image" content="https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/04-LoRA-Decoder.png"><meta property="og:image" content="https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/04-LoRAinMLP.png"><meta property="article:published_time" content="2026-06-30T08:54:01.000Z"><meta property="article:modified_time" content="2026-06-30T08:56:09.021Z"><meta property="article:author" content="Zhou"><meta property="article:tag" content="LLMs"><meta property="article:tag" content="LoRA"><meta property="article:tag" content="降维基础"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/04-LoRA.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/"},"headline":"LoRA笔记","image":["https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/04-LoRA.png","https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/04-LoRA-detail.png","https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/04-LoRA-Decoder.png","https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/04-LoRAinMLP.png"],"datePublished":"2026-06-30T08:54:01.000Z","dateModified":"2026-06-30T08:56:09.021Z","author":{"@type":"Person","name":"Zhou"},"publisher":{"@type":"Organization","name":"在代码中遨游","logo":{"@type":"ImageObject","url":{"text":"一个小角落"}}},"description":"LoRA (Low-Rank Adaptation)，一种LLM的微调方法  选择LoRA是因为它通过向变换器层注入可训练的低秩矩阵，主要针对语言模型组件，从而高效适应大型预训练模型。这种方法显著减少了可训练参数的数量，使微调在计算上更轻松，同时保持了强有力的性能。（Kvasir-VQA-x1数据集中介绍）"}</script><link rel="canonical" href="https://zhouwentong7.github.io/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/"><link rel="icon" href="/img/bamboo.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/github.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">一个小角落</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="My Github" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2026-06-30T08:54:01.000Z" title="2026/6/30 17:54:01">2026-06-30</time>发表</span><span class="level-item"><time dateTime="2026-06-30T08:56:09.021Z" title="2026/6/30 17:56:09">2026-06-30</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a><span> / </span><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a><span> / </span><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LLM/">LLM</a></span><span class="level-item">9 分钟读完 (大约1352个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">LoRA笔记</h1><div class="content"><p>LoRA (Low-Rank Adaptation)，一种LLM的微调方法</p>
+<blockquote>
+<p>选择LoRA是因为它通过向变换器层<strong>注入</strong>可训练的低秩矩阵，主要针对语言模型组件，从而高效适应大型预训练模型。这种方法显著减少了可训练参数的数量，使微调在计算上更轻松，同时保持了强有力的性能。（Kvasir-VQA-x1数据集中介绍）</p>
+</blockquote>
+<span id="more"></span>
+<article class="message is-info is-default">
+        <div class="message-header"><p><i class="fa-solid fa-circle-info mr-2"></i>【LoRA毁掉了我的大厂面试——从原理到大厂面试题再到实操微调，一个视频讲清楚】 https</p>
+</div>
+        <div class="message-body">
+            <ul>
+<li>带有AutoDL的使用方法、使用AutoDL、LlamaFactory微调大模型：从登录AutoDL、下载库、upload数据集在内的所有流程</li>
+</ul>
+
+        </div>
+    </article>
+<p>以Qwen2.5-7B为例：</p>
+<ul>
+<li>7B = 70亿参数 × 2 Bytes ≈ 14G （只是加载或推理）</li>
+<li>若全参微调需要120G左右：
+<ul>
+<li>激活值  ≈ 22G</li>
+<li>优化器状态 ≈ 56G</li>
+<li>梯度 ≈ 28G</li>
+<li>模型权重 ≈ 14G</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>1 Bytes(字节) = 8位2进制数<br>
+精度：FP16 = 2 Bytes/参数</p>
+</blockquote>
+<h2 id="%E7%90%86%E8%A7%A3rank%E5%92%8C%E5%BE%AE%E8%B0%83" tabindex="-1" id="理解Rank和微调">理解Rank和微调</h2>
+<p><strong>秩（Rank）</strong><br>
+矩阵中线性无关的行或列的数量，真正包含独立信息的维度。且行秩=列秩</p>
+<p>而研究发现，大模型的权重$w$(满秩)在微调时，微调的变化$\Delta w$ 具有低秩性。<br>
+所以优化，从微调整个$w$矩阵，转变为只微调变化的低秩的$\Delta w$，就可以达到接近全参微调的效果。</p>
+<p>$\Delta w$可以用两个更小的矩阵进行表示<br>
+<img src="04-LoRA.png" alt="04-LoRA"></p>
+<h2 id="lora%E6%A0%B8%E5%BF%83%E8%BF%87%E7%A8%8B" tabindex="-1" id="LoRA核心过程">LoRA核心过程</h2>
+<p><img src="04-LoRA-detail.png" alt="04-LoRA-detail"></p>
+<p>$$ \begin{aligned}<br>
+Q &amp;= Q_1 + Q_2 \<br>
+&amp;= W_qX+\Delta W_qX \<br>
+&amp;=W_qX + ABX \<br>
+&amp;= (W_q +AB)X \<br>
+&amp;= W_q^{Merged}X\end{aligned} $$</p>
+<ul>
+<li>A : LoRA 模块降维矩阵，使用随机数初始化</li>
+<li>B: LoRA模块升维矩阵，使用全0矩阵初始化</li>
+<li>x输入到模型后，原参数冻结（不参与反向传播），仅在LoRA模块的两个小矩阵进行参数更新</li>
+<li>最后原参数和更新后的内容相加得到更新后的结果</li>
+</ul>
+<article class="message is-info is-default">
+        <div class="message-header"><p><i class="fa-solid fa-circle-info mr-2"></i>使用LoRA训练的模型推理时是否会造成额外延迟？</p>
+</div>
+        <div class="message-body">
+            <p>答：不会，在LoRA训练结束后，更新的$\Delta W$直接与原参数相加，不会改变模型结构。</p>
+
+        </div>
+    </article>
+<h2 id="lora%E5%9C%A8%E5%93%AA%E9%87%8C%E4%BD%BF%E7%94%A8" tabindex="-1" id="LoRA在哪里使用">LoRA在哪里使用</h2>
+<p>主流大模型（Qwen、LLaMA）采用Transformer-Decoder Only架构，由24层堆叠而成。</p>
+<p><img src="04-LoRA-Decoder.png" alt="04-LoRA-Decoder"></p>
+<p>LoRA作用与每个Decoder的掩码多头注意力 。</p>
+<h3 id="%E5%88%9D%E6%AD%A5%E5%AE%9E%E9%AA%8C%EF%BC%9A%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%9A%84%24w_q%24%E5%92%8C%24w_v%24" tabindex="-1" id="初步实验：注意力的-W-q-和-W-v">初步实验：注意力的$W_q$和$W_v$</h3>
+<p>对Decoder的多头注意力的QKV的Q、V权重的更新使用LoRA方法：</p>
+<ul>
+<li>$W_q$：关注的信息</li>
+<li>$W_v$：决定提取的内容</li>
+</ul>
+<p>结果：显著改变了注意力的分布，若显存资源有限，或任务简单，可以只调整这两个矩阵。</p>
+<h3 id="mlp%E9%83%A8%E5%88%86%E6%8F%92%E5%85%A5lora" tabindex="-1" id="MLP部分插入LoRA">MLP部分插入LoRA</h3>
+<p>根据进一步研究（如QLoRA）发现，仅对Attention微调难以改变模型深层行为，而MLP才是大模型中只是存储与重组的核心。</p>
+<p>LLM中MLP通常是三层线性投影“</p>
+<ul>
+<li>$W_{up}$：映射到高维空间</li>
+<li>$W_{gate}$：控制信息流</li>
+<li>$W_{down}$：映射到原维度<br>
+<img src="04-LoRAinMLP.png" alt="04-LoRAinMLP"></li>
+</ul>
+<article class="message is-success is-default">
+        <div class="message-header"><p><i class="fa-solid fa-lightbulb mr-2"></i>主流LoRA微调：All-Linear</p>
+</div>
+        <div class="message-body">
+            <p>并非微调全部参数，而是在素有线性层加入LoRA。<br>
+使用原则：</p>
+<ul>
+<li>任务越复杂、推理与知识重组要求越高→All-Linear</li>
+<li>任务简单、显存受限 → Attention LoRA</li>
+</ul>
+
+        </div>
+    </article>
+<h2 id="%E5%A4%A7%E5%8E%82%E9%9D%A2%E8%AF%95" tabindex="-1" id="大厂面试">大厂面试</h2>
+<article class="message is-success is-default">
+        <div class="message-header"><p><i class="fa-solid fa-lightbulb mr-2"></i>对AB矩阵初始化提问较多</p>
+</div>
+        <div class="message-body">
+            <ul>
+<li>A： 降维矩阵，初始化为随机</li>
+<li>B：升维矩阵，初始化为0</li>
+</ul>
+
+        </div>
+    </article>
+<p>Q1：为什么A是随机初始化，B是全0？为什么不能都随机或者都为0初始化？</p>
+<ol>
+<li>
+<p>在初始阶段，LoRA模块需要保持透明，也就是乘积为0，保证不会对原有性能表现造成干扰。</p>
+</li>
+<li>
+<p>为保证反向传播顺利进行，需要损失函数对A、B的梯度不同时为0</p>
+<p>情况一：若AB均为全零矩阵<br>
+$$ \begin{aligned} \frac{\partial \mathcal{L}}{\partial A} &amp;= \frac{\partial \mathcal{L}}{\partial Q} \cdot Z^T \ &amp;= \frac{\partial \mathcal{L}}{\partial Q} (BX)^T \ &amp;= \frac{\partial \mathcal{L}}{\partial Q} X^T B^T \end{aligned} $$<br>
+对A矩阵求偏导，可以看到最后会有一个矩阵为$B^T$, 而B为0，则损失函数对A梯度为0。<br>
+$$ \frac{\partial \mathcal{L}}{\partial B} = \frac{\partial \mathcal{L}}{\partial Z} \cdot X^T = \left( A^T \frac{\partial \mathcal{L}}{\partial Q} \right) X^T $$<br>
+对B同样的，也会导致损失函数对B的梯度为0，无法顺利更新</p>
+<p>情况二：A、B都不为0，观察更新函数：<br>
+$$ \begin{aligned}<br>
+Q &amp;= Q_1 + Q_2 \<br>
+&amp;= W_qX+\Delta W_qX \<br>
+&amp;=W_qX + ABX \<br>
+&amp;= (W_q +AB)X \<br>
+&amp;= W_q^{Merged}X\end{aligned} $$</p>
+<p>则：<br>
+$$<br>
+W_{final} = W_{pretrained} + LargeNoise<br>
+$$<br>
+情况三：一个为0，一个随机。（其实A、B反过来也可以）<br>
+既不影响原来模型的表现，又能保证梯度能顺利更新。</p>
+</li>
+</ol>
+</div><div class="article-licensing box"><div class="licensing-title"><p>LoRA笔记</p><p><a href="https://zhouwentong7.github.io/2026/06/30/LoRA笔记/">https://zhouwentong7.github.io/2026/06/30/LoRA笔记/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Zhou</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2026-06-30</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2026-06-30</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/LLMs/">LLMs</a><a class="link-muted mr-2" rel="tag" href="/tags/LoRA/">LoRA</a><a class="link-muted mr-2" rel="tag" href="/tags/%E9%99%8D%E7%BB%B4%E5%9F%BA%E7%A1%80/">降维基础</a></div><div class="sharethis-inline-share-buttons"></div><script src="None" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">喜欢这篇文章？打赏一下作者吧</h3><div class="buttons is-centered"><a class="button donate" href="https://ifdian.net/a/a_little_corner" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>爱发电</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>支付宝</span><span class="qrcode"><img src="/img/alipay.jpg" alt="支付宝"></span></a><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>微信</span><span class="qrcode"><img src="/img/wechatpay.jpg" alt="微信"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2026/06/30/ReasoningLLMs%E7%AC%94%E8%AE%B0/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">ReasoningLLMs笔记</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/06/30/Transformer%E7%B2%BE%E8%AF%BB-AttentionIsAllYouNeed/"><span class="level-item">Transformer精读-AttentionIsAllYouNeed</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="comment-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@1.7.2/dist/gitalk.min.js"></script><script>var gitalk = new Gitalk({
+            id: "8e154adea849a86d4401165eb4f4ba5d",
+            repo: "ZhouWentong7.github.io",
+            owner: "ZhouWentong7",
+            clientID: "Ov23ligZ57M4OmBZPjFL",
+            clientSecret: "dbf28ece71a56afb30b2475d2de8005c5c0ae49c",
+            admin: ["ZhouWentong7"],
+            createIssueManually: false,
+            distractionFreeMode: false,
+            perPage: 20,
+            pagerDirection: "last",
+            
+            
+            enableHotKey: true,
+            language: "zh-CN",
+        })
+        gitalk.render('comment-container')</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-06-30T08:56:51.000Z">2026-06-30</time></p><p class="title"><a href="/2026/06/30/ReasoningLLMs%E7%AC%94%E8%AE%B0/">ReasoningLLMs笔记</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-LLM/">技术学习 - 深度学习 - LLM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-06-30T08:54:01.000Z">2026-06-30</time></p><p class="title"><a href="/2026/06/30/LoRA%E7%AC%94%E8%AE%B0/">LoRA笔记</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LLM/">LLM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-06-30T08:50:52.000Z">2026-06-30</time></p><p class="title"><a href="/2026/06/30/Transformer%E7%B2%BE%E8%AF%BB-AttentionIsAllYouNeed/">Transformer精读-AttentionIsAllYouNeed</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a> / <a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LLM/">LLM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-06-30T07:40:38.000Z">2026-06-30</time></p><p class="title"><a href="/2026/06/30/%E8%BF%91%E5%B9%B4AI%E5%BA%94%E7%94%A8%E6%8A%80%E6%9C%AF%E4%B8%B2%E8%AE%B2%E4%B8%8E%E4%BC%98%E8%B4%A8%E6%96%87%E6%A1%A3%E8%AE%B0%E5%BD%95-%E7%AC%94%E8%AE%B0/">近年AI应用技术串讲与优质文档记录-笔记</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-LLM/">技术学习 - 深度学习 - LLM</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-05-28T08:34:24.000Z">2026-05-28</time></p><p class="title"><a href="/2026/05/28/%E5%8D%A1%E7%89%87%E7%AC%94%E8%AE%B0%E5%86%99%E4%BD%9C%E6%B3%95-%E8%AF%BB%E5%90%8E%E6%84%9F/">读后感-卡片笔记写作法</a></p><p class="categories"><a href="/categories/%E7%94%9F%E6%B4%BB/">生活</a> / <a href="/categories/%E7%94%9F%E6%B4%BB/%E9%98%85%E8%AF%BB/">阅读</a></p></div></article></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技术学习</span></span><span class="level-end"><span class="level-item tag">18</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/Python%E6%8A%80%E5%B7%A7/"><span class="level-start"><span class="level-item">Python技巧</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">深度学习</span></span><span class="level-end"><span class="level-item tag">17</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/LLM/"><span class="level-start"><span class="level-item">LLM</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0-LLM/"><span class="level-start"><span class="level-item">技术学习 - 深度学习 - LLM</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/"><span class="level-start"><span class="level-item">技能学习</span></span><span class="level-end"><span class="level-item tag">21</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Hexo/"><span class="level-start"><span class="level-item">Hexo</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Java/%E7%8E%AF%E5%A2%83/"><span class="level-start"><span class="level-item">环境</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/wsl/"><span class="level-start"><span class="level-item">wsl</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/Linux/%E9%85%8D%E7%BD%AE/"><span class="level-start"><span class="level-item">配置</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/markdown/"><span class="level-start"><span class="level-item">markdown</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/"><span class="level-start"><span class="level-item">代码管理</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E8%83%BD%E5%AD%A6%E4%B9%A0/%E7%A1%AC%E4%BB%B6/"><span class="level-start"><span class="level-item">硬件</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/"><span class="level-start"><span class="level-item">生活</span></span><span class="level-end"><span class="level-item tag">14</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E7%95%99%E5%AD%A6/"><span class="level-start"><span class="level-item">留学</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E7%A2%8E%E7%A2%8E%E5%BF%B5/"><span class="level-start"><span class="level-item">碎碎念</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%94%9F%E6%B4%BB/%E9%98%85%E8%AF%BB/"><span class="level-start"><span class="level-item">阅读</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/"><span class="level-start"><span class="level-item">知识科普</span></span><span class="level-end"><span class="level-item tag">1</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E7%9F%A5%E8%AF%86%E7%A7%91%E6%99%AE/%E8%AE%A1%E7%AE%97%E6%9C%BA/"><span class="level-start"><span class="level-item">计算机</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"><span class="level-start"><span class="level-item">计算机基础</span></span><span class="level-end"><span class="level-item tag">3</span></span></a><ul><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/Leetcode/"><span class="level-start"><span class="level-item">Leetcode</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="level-start"><span class="level-item">数据结构与算法</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/AMP/"><span class="tag">AMP</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Activation-Function/"><span class="tag">Activation Function</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Agent/"><span class="tag">Agent</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Attention/"><span class="tag">Attention</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BFS/"><span class="tag">BFS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BatchNorm/"><span class="tag">BatchNorm</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/BitNet/"><span class="tag">BitNet</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CoT/"><span class="tag">CoT</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C%E8%AF%AD%E8%A8%80/"><span class="tag">C语言</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/DFS/"><span class="tag">DFS</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Fine-tuning/"><span class="tag">Fine-tuning</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">5</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Image-Segmentation/"><span class="tag">Image Segmentation</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Java/"><span class="tag">Java</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/LLM/"><span class="tag">LLM</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/LLMs/"><span class="tag">LLMs</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/LayerNorm/"><span class="tag">LayerNorm</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Leaky-ReLU/"><span class="tag">Leaky ReLU</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux/"><span class="tag">Linux</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/LoRA/"><span class="tag">LoRA</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MCP/"><span class="tag">MCP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/NLP/"><span class="tag">NLP</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/RAG/"><span class="tag">RAG</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ReLU/"><span class="tag">ReLU</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Sigmoid/"><span class="tag">Sigmoid</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Skills/"><span class="tag">Skills</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Software-Development/"><span class="tag">Software Development</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Transformer/"><span class="tag">Transformer</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Windows/"><span class="tag">Windows</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/deep-learning/"><span class="tag">deep learning</span><span class="tag">14</span></a></div><div class="control"><a class="tags has-addons" href="/tags/docker/"><span class="tag">docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/front-end/"><span class="tag">front end</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/functionCall/"><span class="tag">functionCall</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/git/"><span class="tag">git</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/github/"><span class="tag">github</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/hexo/"><span class="tag">hexo</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/machine-learning/"><span class="tag">machine learning</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/markdown/"><span class="tag">markdown</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/pytorch/"><span class="tag">pytorch</span><span class="tag">10</span></a></div><div class="control"><a class="tags has-addons" href="/tags/softmax/"><span class="tag">softmax</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ssh/"><span class="tag">ssh</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/vscode/"><span class="tag">vscode</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/wandb/"><span class="tag">wandb</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/wsl/"><span class="tag">wsl</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86/"><span class="tag">代码管理</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%86%99%E4%BD%9C/"><span class="tag">写作</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%93%88%E5%B8%8C/"><span class="tag">哈希</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%9B%BE/"><span class="tag">图</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/"><span class="tag">排序算法</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%90%9C%E7%B4%A2%E7%AE%97%E6%B3%95/"><span class="tag">搜索算法</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E6%81%A2%E5%A4%8D/"><span class="tag">数据恢复</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"><span class="tag">数据结构与算法</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/"><span class="tag">文件读取</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80/"><span class="tag">机器学习基础</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%A0%88/"><span class="tag">栈</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%A6%82%E7%8E%87%E8%AE%BA/"><span class="tag">概率论</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"><span class="tag">深度学习</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0/"><span class="tag">激活函数</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%94%9F%E6%B4%BB/"><span class="tag">生活</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A1%AC%E4%BB%B6/"><span class="tag">硬件</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A2%8E%E7%A2%8E%E5%BF%B5/"><span class="tag">碎碎念</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%A7%91%E7%A0%94/"><span class="tag">科研</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BB%88%E7%AB%AF%E5%91%BD%E4%BB%A4/"><span class="tag">终端命令</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87/"><span class="tag">评价指标</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%AF%BB%E5%90%8E%E6%84%9F/"><span class="tag">读后感</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B4%9D%E5%8F%B6%E6%96%AF/"><span class="tag">贝叶斯</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%93%BE%E8%A1%A8/"><span class="tag">链表</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%99%8D%E7%BB%B4%E5%9F%BA%E7%A1%80/"><span class="tag">降维基础</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E6%8B%8D/"><span class="tag">随拍</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%8F%E7%AC%94/"><span class="tag">随笔</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4/"><span class="tag">隐私保护</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/"><span class="tag">项目分享</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A1%B9%E7%9B%AE%E7%AE%A1%E7%90%86/"><span class="tag">项目管理</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E9%A2%91%E7%8E%87%E6%B4%BE/"><span class="tag">频率派</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#%E7%90%86%E8%A7%A3rank%E5%92%8C%E5%BE%AE%E8%B0%83"><span class="level-left"><span class="level-item">1</span><span class="level-item">理解Rank和微调</span></span></a></li><li><a class="level is-mobile" href="#lora%E6%A0%B8%E5%BF%83%E8%BF%87%E7%A8%8B"><span class="level-left"><span class="level-item">2</span><span class="level-item">LoRA核心过程</span></span></a></li><li><a class="level is-mobile" href="#lora%E5%9C%A8%E5%93%AA%E9%87%8C%E4%BD%BF%E7%94%A8"><span class="level-left"><span class="level-item">3</span><span class="level-item">LoRA在哪里使用</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#%E5%88%9D%E6%AD%A5%E5%AE%9E%E9%AA%8C%EF%BC%9A%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%9A%84%24w_q%24%E5%92%8C%24w_v%24"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">初步实验：注意力的$W_q$和$W_v$</span></span></a></li><li><a class="level is-mobile" href="#mlp%E9%83%A8%E5%88%86%E6%8F%92%E5%85%A5lora"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">MLP部分插入LoRA</span></span></a></li></ul></li><li><a class="level is-mobile" href="#%E5%A4%A7%E5%8E%82%E9%9D%A2%E8%AF%95"><span class="level-left"><span class="level-item">4</span><span class="level-item">大厂面试</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">一个小角落</a><p class="is-size-7"><span>&copy; 2026 Zhou</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p><p class="is-size-7">© 2019</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Go to My GitHub" href="https://github.com/ZhouWentong7"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script>+           +           +           <script src="https://cdn.jsdelivr.net/npm/mermaid@10.4.0/dist/mermaid.min.js"></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
