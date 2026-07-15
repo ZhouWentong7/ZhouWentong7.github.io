@@ -45,24 +45,24 @@
 <h2 id="2.1-ag%E7%9A%84%E7%BB%93%E6%9E%84%E4%B8%8E%E5%8E%9F%E7%90%86" tabindex="-1" id="2-1-AG的结构与原理">2.1 AG的结构与原理</h2>
 <p><img src="AttentionGate.png" alt="AG"></p>
 <ul>
-<li>$x^l$:从encoder对应层skip来的特征图，通常是高分辨率的图像。
+<li><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mi>l</mi></msup></mrow><annotation encoding="application/x-tex">x^l</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0197em;">l</span></span></span></span></span></span></span></span></span></span></span></eq>:从encoder对应层skip来的特征图，通常是高分辨率的图像。
 <ul>
 <li>可能包含冗余和无关信息</li>
 </ul>
 </li>
-<li>$g$：从上采样而来的低分辨率信号。
+<li><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span></span></eq>：从上采样而来的低分辨率信号。
 <ul>
 <li>解码器当前关注的区域，帮助引导关注重点</li>
 </ul>
 </li>
 </ul>
 <p><strong>处理流程</strong><br>
-假设：$x^l$（1,64,64,64）,$g$(1,128,32,32)</p>
+假设：<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mi>l</mi></msup></mrow><annotation encoding="application/x-tex">x^l</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0197em;">l</span></span></span></span></span></span></span></span></span></span></span></eq>（1,64,64,64）,<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span></span></eq>(1,128,32,32)</p>
 <blockquote>
 <p>通常g的空间尺寸更小，channel更大</p>
 </blockquote>
 <ol>
-<li>将两个输入使用$1\times 1$卷积映射到统一维度</li>
+<li>将两个输入使用<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1\times 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></eq>卷积映射到统一维度</li>
 <li>对齐空间尺寸（上采样gating信号）：可以使用线性插值</li>
 </ol>
 <blockquote>
@@ -70,9 +70,9 @@
 </blockquote>
 <ol start="3">
 <li>融合后是使用ReLU激活</li>
-<li>$1\times 1$卷积：通道降到1通道size:(1,1,32,32)</li>
+<li><eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>×</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">1\times 1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span></eq>卷积：通道降到1通道size:(1,1,32,32)</li>
 <li>得到mask：sigmoid将值映射到0~1之间</li>
-<li>mask与$x^l$相乘，得到“重要区域”特征值更强，“不重要区域”被抑制的特征图。</li>
+<li>mask与<eq><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>x</mi><mi>l</mi></msup></mrow><annotation encoding="application/x-tex">x^l</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.0197em;">l</span></span></span></span></span></span></span></span></span></span></span></eq>相乘，得到“重要区域”特征值更强，“不重要区域”被抑制的特征图。</li>
 </ol>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"> x (1, 64, 64, 64)</span><br><span class="line">      │</span><br><span class="line">[1×1 Conv] →────────────┐</span><br><span class="line">      │                 │</span><br><span class="line">  (1, 32, 64, 64)       │</span><br><span class="line">                        ▼</span><br><span class="line">                     Add + ReLU</span><br><span class="line">                        ▲</span><br><span class="line">[Upsample] ←── [1×1 Conv] ← g (1, 128, 32, 32)</span><br><span class="line">  (1, 32, 64, 64)</span><br><span class="line"></span><br><span class="line">                        │</span><br><span class="line">                [1×1 Conv + Sigmoid]</span><br><span class="line">                        ↓</span><br><span class="line">                Attention mask (1, 1, 64, 64)</span><br><span class="line"></span><br><span class="line">                        ↓</span><br><span class="line">      Element-wise multiplication</span><br><span class="line">                        ↓</span><br><span class="line">      Output: (1, 64, 64, 64)</span><br></pre></td></tr></table></figure>
 <h2 id="2.2-pytorch-%E5%AE%9E%E7%8E%B0ag%EF%BC%882d%EF%BC%89" tabindex="-1" id="2-2-Pytorch-实现AG（2D）">2.2 Pytorch 实现AG（2D）</h2>
